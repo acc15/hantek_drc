@@ -6,15 +6,11 @@ START_TEST(write_csv)
     ck_assert_ptr_nonnull(csv_file);
 
     hantek_drc_csv_payload csv_payload = { .csv_file = csv_file };
-    hantek_drc_device_capabilities caps;
-    hantek_drc_init_6254bd(&caps);
-    hantek_drc_channel_info channels[4];
-    hantek_drc_info info = {
-        .caps = &caps,
-        .channel_info = channels, 
-        .on_frame = &hantek_drc_csv_append_data,
-        .payload = &csv_payload
-    };
+    hantek_drc_info info;
+    hantek_drc_init_6254bd(&info);
+    info.on_frame = &hantek_drc_csv_append_data;
+    info.payload = &csv_payload;
+
     ck_assert(hantek_drc_read_file("samples/data/ch_1_timediv_1us_vdiv_1v_triangle_10hz_no_clamp.0.drc", &info));
     fclose(csv_file);
 

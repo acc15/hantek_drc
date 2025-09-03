@@ -1,6 +1,16 @@
 #pragma once
 
-#include "caps.h"
+#include <stdint.h>
+#include <stddef.h>
+
+#ifndef HANTEK_DRC_MAX_CHANNELS
+#   define HANTEK_DRC_MAX_CHANNELS 8
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum hantek_drc_coupling {
     HANTEK_DRC_COUPLING_DC,
     HANTEK_DRC_COUPLING_AC,
@@ -21,13 +31,16 @@ typedef struct hantek_drc_channel_info {
 
 typedef struct hantek_drc_info {
     
-    hantek_drc_device_capabilities* caps;
-    hantek_drc_channel_info* channel_info; // array with size = caps->max_channels
+    size_t max_channels;
+    uint64_t max_sampling_rate;
+    size_t x_div;
+    size_t y_div;
+
+    hantek_drc_channel_info channel[HANTEK_DRC_MAX_CHANNELS];
     
     void(*on_frame)(
-        struct hantek_drc_channel_info* channel_info, 
-        const int16_t* buffer, 
-        size_t frame_index
+        struct hantek_drc_channel_info* channel, 
+        const int16_t* buffer
     );
     void(*on_before_data)(struct hantek_drc_info* info);
     void(*on_free)(struct hantek_drc_info* info);
@@ -36,19 +49,24 @@ typedef struct hantek_drc_info {
     uint16_t timediv; // timediv index
     size_t buffer_length; // buffer length (count of data points in single frame)
     size_t channel_count; // count of enabled channels in file
-    size_t frame_count; // count of frames per single channel (total frame count = frame_count * channel_count)
+    size_t frame_count; // count of frames that has been read from files
 
 } hantek_drc_info;
 
-// void hantek_drc_init_6254bd(struct hantek_drc_info* info);
-// void hantek_drc_free(struct hantek_drc_info* info);
+void hantek_drc_init(struct hantek_drc_info* info);
+void hantek_drc_init_6254bd(struct hantek_drc_info* info);
+void hantek_drc_free(struct hantek_drc_info* info);
 
-uint64_t hantek_drc_info_voltage_to_millivolts(const hantek_drc_channel_info* channel_info);
-float hantek_drc_info_voltage_to_volts(const hantek_drc_channel_info* channel_info);
-uint64_t hantek_drc_info_timediv_to_nanos(const hantek_drc_info* info);
-float hantek_drc_info_timediv_to_seconds(const hantek_drc_info* info);
-uint64_t hantek_drc_info_milli_sampling_rate(const hantek_drc_info* info);
+uint64_t hantek_drc_channel_millivolts(const hantek_drc_channel_info* channel);
+float hantek_drc_channel_volts(const hantek_drc_channel_info* channel);
+uint64_t hantek_drc_info_timediv_nanos(const hantek_drc_info* info);
+float hantek_drc_info_timediv_seconds(const hantek_drc_info* info);
+uint64_t hantek_drc_info_sampling_rate_milli(const hantek_drc_info* info);
 float hantek_drc_info_sampling_rate(const hantek_drc_info* info);
-int64_t hantek_drc_info_max_millivolts(const hantek_drc_channel_info* channel_info);
-float hantek_drc_info_data_to_volts_multiplier(const hantek_drc_channel_info* channel_info);
-float hantek_drc_info_data_to_volts(const hantek_drc_channel_info* channel_info, int16_t raw_data);
+int64_t hantek_drc_channel_max_millivolts(const hantek_drc_channel_info* channel);
+float hantek_drc_channel_data_volts_multiplier(const hantek_drc_channel_info* channel);
+float hantek_drc_channel_data_volts(const hantek_drc_channel_info* channel, int16_t data);
+
+#ifdef __cplusplus
+}
+#endif

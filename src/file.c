@@ -45,26 +45,6 @@ typedef struct hantek_drc_file_data_block_header {
 
 const size_t HANTEK_DRC_DATA_BUFFER_LENGTH = 4096;
 
-size_t hantek_drc_header_length(hantek_drc_info* info) {
-    return sizeof(hantek_drc_file_signature) 
-        + sizeof(uint32_t) * info->caps->max_channels
-        + sizeof(hantek_drc_file_channel_info) * info->channel_count 
-        + sizeof(hantek_drc_file_general_info);
-}
-
-size_t handle_drc_frame_size(size_t buffer_length) {
-    return sizeof(hantek_drc_file_data_block_header) + buffer_length * sizeof(int16_t);
-}
-
-size_t hantek_drc_frame_count(FILE* file, hantek_drc_info* info) {
-    size_t data_offset = hantek_drc_header_length(info);
-    fseek(file, 0, SEEK_END);
-    size_t file_size = ftell(file) - 1; // -1 - exclude trailing zero
-    fseek(file, data_offset, SEEK_SET);
-    size_t total_frame_count = (file_size - data_offset) / handle_drc_frame_size(info->buffer_length);
-    return total_frame_count / info->channel_count;
-}
-
 bool hantek_drc_read_signature(FILE* file) {
     hantek_drc_file_signature header;
     size_t data_read = fread(&header, sizeof(hantek_drc_file_signature), 1, file);
@@ -72,7 +52,8 @@ bool hantek_drc_read_signature(FILE* file) {
 }
 
 bool hantek_drc_read_channels(FILE* file, hantek_drc_info* info) {
-    for (size_t i = 0; i < info->caps->max_channels; ++i) {
+    info->channel_count = 0;
+    for (size_t i = 0; i < info->max_channels; ++i) {
         uint32_t enabled = 0;
         if (fread(&enabled, sizeof(enabled), 1, file) != 1) {
             return false;
@@ -85,7 +66,7 @@ bool hantek_drc_read_channels(FILE* file, hantek_drc_info* info) {
             return false;
         }
 
-        hantek_drc_channel_info* ch = &info->channel_info[info->channel_count];
+        hantek_drc_channel_info* ch = &info->channel[info->channel_count];
         ch->index = info->channel_count;
         ch->number = i;
         ch->coupling = file_channel_info.coupling;
@@ -105,7 +86,6 @@ bool hantek_drc_read_general(FILE* file, hantek_drc_info* info) {
     }
     info->timediv = file_general.timediv;
     info->buffer_length = HANTEK_DRC_DATA_BUFFER_LENGTH;
-    info->frame_count = hantek_drc_frame_count(file, info);
     return true;
 }
 
@@ -129,25 +109,24 @@ bool hantek_drc_read_data_frame(FILE* file, hantek_drc_channel_info* channel_inf
 }
 
 bool hantek_drc_read_data(FILE* file, hantek_drc_info* info) {
-    if (info->channel_count == 0 || info->frame_count == 0) {
+    if (info->channel_count == 0) {
         return true;
     }
     size_t channel_index = 0;
-    size_t frame_index = 0;
     int16_t buffer[HANTEK_DRC_DATA_BUFFER_LENGTH];
     while (true) {
-        hantek_drc_channel_info* channel = &info->channel_info[channel_index];
+        hantek_drc_channel_info* channel = &info->channel[channel_index];
         bool has_data = hantek_drc_read_data_frame(file, channel, buffer);
         if (!has_data) {
             break;
         }
         if (info->on_frame != NULL) {
-            info->on_frame(channel, buffer, frame_index);
+            info->on_frame(channel, buffer);
         }
         ++channel_index;
         if (channel_index >= info->channel_count) {
             channel_index = 0;
-            ++frame_index;
+            ++info->frame_count;
         }
     }
     return feof(file);
@@ -157,7 +136,7 @@ bool hantek_drc_read(FILE* file, hantek_drc_info* info) {
     if (!hantek_drc_read_header(file, info)) {
         return false;
     }
-    if (info->on_before_data != NULL) {
+    if (info->frame_count == 0 && info->on_before_data != NULL) {
         info->on_before_data(info);
     }
     return hantek_drc_read_data(file, info);

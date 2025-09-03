@@ -5,7 +5,6 @@ set(CMAKE_C_STANDARD_REQUIRED TRUE) # Make it mandatory
 add_library(hantek_drc 
     src/file.c
     src/value.c
-    src/caps.c
     src/info.c
     src/csv.c
 )

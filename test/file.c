@@ -3,14 +3,9 @@
 
 START_TEST(read_file) 
 {
-    hantek_drc_device_capabilities caps;
-    hantek_drc_init_6254bd(&caps);
 
-    hantek_drc_channel_info channels[4];
-    hantek_drc_info info = {
-        .caps = &caps,
-        .channel_info = channels
-    };
+    hantek_drc_info info;
+    hantek_drc_init_6254bd(&info);
 
     //hantek_drc_init_6254bd(&info);
     //hantek_drc_free(&info);
@@ -19,10 +14,10 @@ START_TEST(read_file)
     ck_assert_uint_eq(info.channel_count, 1);
     ck_assert_uint_eq(info.frame_count, 9);
     ck_assert_uint_eq(info.buffer_length, HANTEK_DRC_DATA_BUFFER_LENGTH);
-    ck_assert_uint_eq(channels[0].index, 0);
-    ck_assert_uint_eq(channels[0].number, 0);
-    ck_assert_float_eq(hantek_drc_info_voltage_to_volts(&channels[0]), 1.f);
-    ck_assert_float_eq(hantek_drc_info_timediv_to_seconds(&info), 0.01f);
+    ck_assert_uint_eq(info.channel[0].index, 0);
+    ck_assert_uint_eq(info.channel[0].number, 0);
+    ck_assert_float_eq(hantek_drc_channel_volts(&info.channel[0]), 1.f);
+    ck_assert_float_eq(hantek_drc_info_timediv_seconds(&info), 0.01f);
 }
 END_TEST
 
