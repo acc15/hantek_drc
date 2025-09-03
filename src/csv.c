@@ -7,7 +7,7 @@ bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
     FILE* file = payload->csv_file;
     size_t buffer_length = channel->info->buffer_length;
     for (size_t i = 0; i < buffer_length; ++i) {
-        int result = fprintf(file, "%d\t%d\t%d\t%f\n", 
+        int result = fprintf(file, "%zu\t%zu\t%zu\t%f\n", 
             channel->number + 1, channel->info->frame_count, i, payload->data_fn(channel, buffer[i]));
         if (result < 0) {
             return false;
