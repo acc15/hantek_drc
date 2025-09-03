@@ -60,18 +60,18 @@ float hantek_drc_generic_sampling_rate(size_t x_div, uint64_t max_rate, uint64_t
     return hantek_drc_generic_milli_sampling_rate(x_div, max_rate, timediv_ns) / 1000.f;
 }
 
-int64_t hantek_drc_max_millivolts(uint16_t voltage, uint16_t multiplier, size_t y_divisions) {
-    return hantek_drc_voltage_to_millivolts(voltage, multiplier) * (y_divisions >> 1);
+int64_t hantek_drc_max_millivolts(size_t y_div, uint16_t voltage, uint16_t multiplier) {
+    return hantek_drc_voltage_to_millivolts(voltage, multiplier) * (y_div >> 1);
 }
 
-float hantek_drc_data_to_millivolts_multiplier(uint16_t voltage, uint16_t multiplier, size_t y_divisions) {
-    return (float) hantek_drc_max_millivolts(voltage, multiplier, y_divisions) / INT16_MAX;
+float hantek_drc_data_to_millivolts_multiplier(size_t y_div, uint16_t voltage, uint16_t multiplier) {
+    return (float) hantek_drc_max_millivolts(y_div, voltage, multiplier) / INT16_MAX;
 }
 
-float hantek_drc_data_to_volts_multiplier(uint16_t voltage, uint16_t multiplier, size_t y_divisions) {
-    return hantek_drc_data_to_millivolts_multiplier(voltage, multiplier, y_divisions) / 1000.f;
+float hantek_drc_data_to_volts_multiplier(size_t y_div, uint16_t voltage, uint16_t multiplier) {
+    return hantek_drc_data_to_millivolts_multiplier(y_div, voltage, multiplier) / 1000.f;
 }
 
-float hantek_drc_data_to_volts(uint16_t voltage, uint16_t multiplier, size_t y_divisions, int16_t raw_data) {
-    return hantek_drc_data_to_volts_multiplier(voltage, multiplier, y_divisions) * raw_data;
+float hantek_drc_data_to_volts(size_t y_div, uint16_t voltage, uint16_t multiplier, int16_t raw_data) {
+    return hantek_drc_data_to_volts_multiplier(y_div, voltage, multiplier) * raw_data;
 }
