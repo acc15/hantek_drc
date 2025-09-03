@@ -3,10 +3,11 @@ project(hantek_drc LANGUAGES C)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED TRUE) # Make it mandatory
 add_library(hantek_drc 
-    src/file.c
+    src/read.c
     src/value.c
     src/info.c
     src/csv.c
+    src/mem.c
 )
 
 find_package(Check)
@@ -14,8 +15,9 @@ if(${Check_FOUND})
     add_executable(hantek_drc_test 
         test/main.c    
         test/value.c
-        test/file.c
+        test/read.c
         test/csv.c
+        test/mem.c
     )
     target_link_libraries(hantek_drc_test PRIVATE hantek_drc Check::checkShared)
     

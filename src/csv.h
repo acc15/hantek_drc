@@ -1,6 +1,7 @@
-#pragma
+#pragma once
 
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "info.h"
 
@@ -10,9 +11,11 @@ extern "C" {
 
 typedef struct hantek_drc_csv_payload {
     FILE* csv_file;
+    hantek_drc_data_fn data_fn;
 } hantek_drc_csv_payload;
 
-void hantek_drc_csv_append_data(hantek_drc_channel_info* channel, const int16_t* buffer);
+bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer);
+bool hantek_drc_csv_init(hantek_drc_info* info, const char* path, hantek_drc_data_fn data_fn);
 
 #ifdef __cplusplus
 }
