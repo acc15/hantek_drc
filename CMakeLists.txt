@@ -21,7 +21,9 @@ else()
      add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
-add_library(hantek_drc 
+set(CMAKE_DEBUG_POSTFIX "d")
+
+set(SRC 
     src/read.c
     src/value.c
     src/info.c
@@ -29,13 +31,16 @@ add_library(hantek_drc
     src/mem.c
 )
 
-target_sources(hantek_drc PUBLIC FILE_SET HEADERS BASE_DIRS src FILES
+set(HEADERS 
     src/value.h
     src/info.h
     src/read.h
     src/csv.h
     src/mem.h
 )
+
+add_library(hantek_drc ${SRC})
+target_sources(hantek_drc PUBLIC FILE_SET HEADERS BASE_DIRS src FILES ${HEADERS})
 
 include(CTest)
 if (BUILD_TESTING)
@@ -62,13 +67,24 @@ if (BUILD_TESTING)
     add_test(NAME hantek_drc_test COMMAND hantek_drc_test)
 endif()
 
+if(NOT EXPORT_NAME)
+    if(BUILD_SHARED_LIBS)
+        set(EXPORT_NAME ${PROJECT_NAME}_shared)
+    else()
+        set(EXPORT_NAME ${PROJECT_NAME}_static)
+    endif()
+endif()
+
 include(GNUInstallDirs)
 install(
     TARGETS hantek_drc DESTINATION ${CMAKE_INSTALL_LIBDIR}/hantek_drc 
-    EXPORT hantek_drc-targets 
+    EXPORT ${EXPORT_NAME}
     FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hantek_drc
 )
-install(EXPORT hantek_drc-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/hantek_drc)
+install(
+    EXPORT ${EXPORT_NAME}
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/hantek_drc
+)
 
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
@@ -80,7 +96,6 @@ write_basic_package_version_file(
     ${CMAKE_CURRENT_BINARY_DIR}/hantek_drc-version.cmake 
     COMPATIBILITY SameMajorVersion 
 )
-
 install(
     FILES 
         ${CMAKE_CURRENT_BINARY_DIR}/hantek_drc-config.cmake

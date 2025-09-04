@@ -12,28 +12,29 @@ START_TEST(write_mem)
     ck_assert_float_eq(hantek_drc_info_sampling_rate(&info), 12500.f);
     
     hantek_drc_mem_payload* payload = (hantek_drc_mem_payload*)info.payload;
+    float*** data = (float***) payload->data;
 
     float tol = 0.0001f;
-
+    
     float first_frame_head[] = { 0.062502f, 0.062502f, 0.078127f };
     for (size_t i = 0; i < sizeof(first_frame_head)/sizeof(first_frame_head[0]); ++i) {
-        ck_assert_float_eq_tol(payload->data[0][0][i], first_frame_head[i], tol);
+        ck_assert_float_eq_tol(data[0][0][i], first_frame_head[i], tol);
     }
 
     float first_frame_tail[] = { 1.984436f, 1.984436f, 1.984436f };
     size_t first_tail_index = info.buffer_length - sizeof(first_frame_tail)/sizeof(first_frame_tail[0]);
     for (size_t i = 0; i < sizeof(first_frame_tail)/sizeof(first_frame_tail[0]); ++i) {
-        ck_assert_float_eq_tol(payload->data[0][0][first_tail_index + i], first_frame_tail[i], tol);
+        ck_assert_float_eq_tol(data[0][0][first_tail_index + i], first_frame_tail[i], tol);
     }
 
     float last_frame_head[] = { 0.062502f, 0.062502f, 0.078127f };
     for (size_t i = 0; i < sizeof(last_frame_head)/sizeof(last_frame_head[0]); ++i) {
-        ck_assert_float_eq_tol(payload->data[0][info.frame_count - 1][i], last_frame_head[i], tol);
+        ck_assert_float_eq_tol(data[0][info.frame_count - 1][i], last_frame_head[i], tol);
     }
     float last_frame_tail[] = {1.984436f, 1.984436f, 1.984436f };
     size_t last_tail_index = info.buffer_length - sizeof(last_frame_tail)/sizeof(last_frame_tail[0]);
     for (size_t i = 0; i < sizeof(last_frame_tail)/sizeof(last_frame_tail[0]); ++i) {
-        ck_assert_float_eq_tol(payload->data[0][info.frame_count - 1][last_tail_index + i], last_frame_tail[i], tol);
+        ck_assert_float_eq_tol(data[0][info.frame_count - 1][last_tail_index + i], last_frame_tail[i], tol);
     }
 
     hantek_drc_free(&info);
