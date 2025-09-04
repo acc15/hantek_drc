@@ -2,4 +2,4 @@
 #include <check.h>
 #include "../src/value.h"
 
-TCase* value_tcase();
+TCase* value_tcase(void);

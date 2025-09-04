@@ -3,4 +3,4 @@
 #include "../src/mem.h"
 #include "../src/read.h"
 
-TCase* mem_tcase();
+TCase* mem_tcase(void);

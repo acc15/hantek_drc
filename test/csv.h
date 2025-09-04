@@ -3,4 +3,4 @@
 #include "../src/read.h"
 #include "../src/csv.h"
 
-TCase* csv_tcase();
+TCase* csv_tcase(void);

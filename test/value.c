@@ -1,7 +1,5 @@
 #include "value.h"
 
-
-
 START_TEST(value_from_index) 
 {
     ck_assert_uint_eq(hantek_drc_value(0), 2);
@@ -43,7 +41,7 @@ START_TEST(generic_sampling_rate)
 }
 END_TEST
 
-TCase *value_tcase()
+TCase *value_tcase(void)
 {
     TCase *tcase = tcase_create("value");
     tcase_add_test(tcase, value_from_index);

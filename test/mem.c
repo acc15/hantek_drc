@@ -40,7 +40,7 @@ START_TEST(write_mem)
 }
 END_TEST
 
-TCase* mem_tcase() {
+TCase* mem_tcase(void) {
     TCase *tcase = tcase_create("mem");
     tcase_add_test(tcase, write_mem);
     return tcase;

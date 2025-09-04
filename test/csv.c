@@ -16,7 +16,7 @@ START_TEST(write_csv)
 }
 END_TEST
 
-TCase* csv_tcase() {
+TCase* csv_tcase(void) {
     TCase *tcase = tcase_create("csv");
     tcase_add_test(tcase, write_csv);
     return tcase;

@@ -18,7 +18,7 @@ if(MSVC)
         /Zc:__cplusplus
      )
 else()
-     add_compile_options(-Wall -Wextra -Wpedantic)
+     add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
 add_library(hantek_drc 
@@ -31,7 +31,7 @@ add_library(hantek_drc
 
 include(CTest)
 if (BUILD_TESTING)
-    find_package(Check REQUIRED)
+
     add_executable(hantek_drc_test 
         test/main.c    
         test/value.c
@@ -39,6 +39,17 @@ if (BUILD_TESTING)
         test/csv.c
         test/mem.c
     )
-    target_link_libraries(hantek_drc_test PRIVATE hantek_drc Check::checkShared)
+    target_link_libraries(hantek_drc_test PRIVATE hantek_drc)
+
+    find_package(Check QUIET)
+    if(Check_FOUND)
+        target_link_libraries(hantek_drc_test PRIVATE Check::checkShared)
+    else()
+        find_package(PkgConfig REQUIRED)
+        pkg_check_modules(Check REQUIRED Check)
+        target_include_directories(hantek_drc_test PRIVATE ${Check_INCLUDE_DIRS})
+        target_link_libraries(hantek_drc_test PRIVATE ${Check_LINK_LIBRARIES})
+    endif()
+    target_compile_options(hantek_drc_test PRIVATE -Wno-gnu-zero-variadic-macro-arguments)
     add_test(NAME hantek_drc_test COMMAND hantek_drc_test)
 endif()

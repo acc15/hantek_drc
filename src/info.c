@@ -68,6 +68,7 @@ float hantek_drc_channel_data_volts(const hantek_drc_channel* channel, int16_t d
 }
 
 float hantek_drc_channel_data_normalize(const hantek_drc_channel* channel, int16_t data) {
+    (void)channel; // unused
     return (float) data / INT16_MAX;
 }
 

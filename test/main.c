@@ -4,7 +4,7 @@
 #include "csv.h"
 #include "mem.h"
 
-Suite* hantek_drc_suite() {
+Suite* hantek_drc_suite(void) {
     Suite* suite = suite_create("hantek_drc");
     suite_add_tcase(suite, read_tcase());
     suite_add_tcase(suite, csv_tcase());

@@ -21,7 +21,7 @@ START_TEST(read_file)
 }
 END_TEST
 
-TCase* read_tcase() {
+TCase* read_tcase(void) {
     TCase *tcase = tcase_create("read");
     tcase_add_test(tcase, read_file);
     return tcase;
