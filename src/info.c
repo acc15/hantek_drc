@@ -77,7 +77,7 @@ hantek_drc_data_fn hantek_drc_data_fn_or_default(hantek_drc_data_fn data_fn) {
     return data_fn != NULL ? data_fn : hantek_drc_channel_data_volts;
 }
 
-void* hantek_drc_channel_frame_float_volts(const hantek_drc_channel* channel, const int16_t* data) {
+void* hantek_drc_frame_float_volts(const hantek_drc_channel* channel, const int16_t* data) {
     size_t buffer_length = channel->info->buffer_length;
     float* frame = malloc(sizeof(float) * buffer_length);
     if (frame != NULL) {
@@ -88,7 +88,7 @@ void* hantek_drc_channel_frame_float_volts(const hantek_drc_channel* channel, co
     return frame;
 }
 
-void* hantek_drc_channel_frame_uint16_10bit(const hantek_drc_channel* channel, const int16_t* data) {
+void* hantek_drc_frame_uint16_10bit(const hantek_drc_channel* channel, const int16_t* data) {
     size_t buffer_length = channel->info->buffer_length;
     uint16_t* frame = malloc(sizeof(uint16_t) * buffer_length);
     if (frame != NULL) {
@@ -100,5 +100,5 @@ void* hantek_drc_channel_frame_uint16_10bit(const hantek_drc_channel* channel, c
 }
 
 hantek_drc_frame_fn hantek_drc_frame_fn_or_default(hantek_drc_frame_fn fn) {
-    return fn != NULL ? fn : hantek_drc_channel_frame_float_volts;
+    return fn != NULL ? fn : hantek_drc_frame_float_volts;
 }
