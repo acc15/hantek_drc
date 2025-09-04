@@ -25,17 +25,17 @@ bool hantek_drc_mem_frame(hantek_drc_channel* channel, const int16_t* buffer) {
     hantek_drc_info* info = channel->info;
     hantek_drc_mem_payload* payload = (hantek_drc_mem_payload*) info->payload;
     if (payload->frames_allocated <= info->frame_count) {
-        size_t new_frames_allocated = payload->frames_allocated * 2;
+        size_t frames_allocated = payload->frames_allocated * 2;
         for (size_t i = 0; i < info->channel_count; ++i) {
-            payload->data[i] = realloc(payload->data[i], sizeof(float**)*new_frames_allocated);
+            payload->data[i] = realloc(payload->data[i], sizeof(float**)*frames_allocated);
             if (payload->data[i] != NULL) {
                 memset(payload->data[i] + payload->frames_allocated, 0, 
-                    sizeof(float**)*(new_frames_allocated - payload->frames_allocated));
+                    sizeof(float**)*(frames_allocated - payload->frames_allocated));
             } else {
                 return false;
             }
         }
-        payload->frames_allocated = new_frames_allocated;
+        payload->frames_allocated = frames_allocated;
     }
 
     float* frame = malloc(sizeof(float) * info->buffer_length);
