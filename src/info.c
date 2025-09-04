@@ -73,6 +73,12 @@ float hantek_drc_channel_data_normalize(const hantek_drc_channel* channel, int16
     return (float) data / INT16_MAX;
 }
 
+uint16_t hantek_drc_channel_data_uint16_10bit(const hantek_drc_channel* channel, int16_t data) {
+    (void)channel; // unused
+    static const uint32_t max_10bit_value = ((1 << 10) - 1);
+    return data > 0 ? ((uint32_t)data * max_10bit_value)/INT16_MAX : 0;
+}
+
 hantek_drc_data_fn hantek_drc_data_fn_or_default(hantek_drc_data_fn data_fn) {
     return data_fn != NULL ? data_fn : hantek_drc_channel_data_volts;
 }
@@ -93,7 +99,7 @@ void* hantek_drc_frame_uint16_10bit(const hantek_drc_channel* channel, const int
     uint16_t* frame = malloc(sizeof(uint16_t) * buffer_length);
     if (frame != NULL) {
         for (size_t i = 0; i < buffer_length; ++i) {
-            frame[i] = data[i] > 0 ? ((uint32_t)data[i] * 1023)/INT16_MAX : 0;
+            frame[i] = hantek_drc_channel_data_uint16_10bit(channel, data[i]);
         }
     }
     return frame;

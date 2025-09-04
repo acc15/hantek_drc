@@ -64,9 +64,11 @@ float hantek_drc_info_timediv_seconds(const hantek_drc_info* info);
 uint64_t hantek_drc_info_sampling_rate_milli(const hantek_drc_info* info);
 float hantek_drc_info_sampling_rate(const hantek_drc_info* info);
 int64_t hantek_drc_channel_max_millivolts(const hantek_drc_channel* channel);
+
 float hantek_drc_channel_data_volts_multiplier(const hantek_drc_channel* channel);
 float hantek_drc_channel_data_volts(const hantek_drc_channel* channel, int16_t data);
 float hantek_drc_channel_data_normalize(const hantek_drc_channel* channel, int16_t data);
+uint16_t hantek_drc_channel_data_uint16_10bit(const hantek_drc_channel* channel, int16_t data);
 
 // converts single point of data
 typedef float (*hantek_drc_data_fn)(const hantek_drc_channel*, int16_t);
