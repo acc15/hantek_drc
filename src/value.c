@@ -60,7 +60,7 @@ float hantek_drc_sampling_rate(size_t x_div, uint64_t max_rate, uint64_t timediv
     return hantek_drc_sampling_rate_milli(x_div, max_rate, timediv_ns) / 1000.f;
 }
 
-int64_t hantek_drc_max_millivolts(size_t y_div, uint16_t voltage, uint16_t multiplier) {
+uint64_t hantek_drc_max_millivolts(size_t y_div, uint16_t voltage, uint16_t multiplier) {
     return hantek_drc_voltage_millivolts(voltage, multiplier) * (y_div >> 1);
 }
 
