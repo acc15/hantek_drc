@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 4.1)
-project(hantek_drc VERSION 1.0.0 LANGUAGES C)
-set(CMAKE_C_STANDARD 17)
-set(CMAKE_C_STANDARD_REQUIRED TRUE) # Make it mandatory
+project(hantek_drc VERSION 1.0.0 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE) # Make it mandatory
+set(CMAKE_DEBUG_POSTFIX "d")
 
 if(MSVC)
      add_definitions(-D_CRT_SECURE_NO_WARNINGS) # Disables CRT secure warning to allow cross-platform stdlib usage
@@ -21,22 +23,14 @@ else()
      add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
-set(CMAKE_DEBUG_POSTFIX "d")
 
 set(SRC 
-    src/read.c
-    src/value.c
-    src/info.c
-    src/csv.c
-    src/mem.c
+    src/drc.cpp
+    src/caps.cpp
 )
 
 set(HEADERS 
-    src/value.h
-    src/info.h
-    src/read.h
-    src/csv.h
-    src/mem.h
+    src/drc.hpp
 )
 
 add_library(hantek_drc ${SRC})
@@ -44,26 +38,14 @@ target_sources(hantek_drc PUBLIC FILE_SET HEADERS BASE_DIRS src FILES ${HEADERS}
 
 include(CTest)
 if (BUILD_TESTING)
-    add_executable(hantek_drc_test 
-        test/main.c    
-        test/value.c
-        test/read.c
-        test/csv.c
-        test/mem.c
-    )
-    target_link_libraries(hantek_drc_test PRIVATE hantek_drc)
+    find_package(doctest REQUIRED)
 
-    find_package(Check QUIET)
-    if(Check_FOUND)
-        target_link_libraries(hantek_drc_test PRIVATE Check::checkShared)
-    else()
-        find_package(PkgConfig REQUIRED)
-        pkg_check_modules(Check REQUIRED Check)
-        target_include_directories(hantek_drc_test PRIVATE ${Check_INCLUDE_DIRS})
-        target_link_libraries(hantek_drc_test PRIVATE ${Check_LINK_LIBRARIES})
-    endif()
-    # Ignore warning for check unit testing to work
-    target_compile_options(hantek_drc_test PRIVATE -Wno-gnu-zero-variadic-macro-arguments)
+    add_executable(hantek_drc_test 
+        test/main.cpp
+        test/drc.cpp
+        test/caps.cpp
+    )
+    target_link_libraries(hantek_drc_test PRIVATE hantek_drc doctest::doctest)
     add_test(NAME hantek_drc_test COMMAND hantek_drc_test)
 endif()
 
