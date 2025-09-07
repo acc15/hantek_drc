@@ -48,12 +48,10 @@ constexpr ipow_lookup_array<base, T> ipow_lookup_init() {
     return arr;
 }
 
-
 template <unsigned int base, typename T = std::uintmax_t>
 constexpr T ipow_lookup(unsigned int pow) {
     static constexpr ipow_lookup_array<base, T> table = ipow_lookup_init<base, T>();
     return table[pow];
 }
-
 
 }

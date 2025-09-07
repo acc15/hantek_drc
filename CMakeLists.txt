@@ -35,7 +35,6 @@ set(HEADERS
     src/channel.hpp
     src/info.hpp
     src/value.hpp
-    src/drc.hpp
 )
 
 add_library(hantek_drc ${SRC})
@@ -50,7 +49,6 @@ if (BUILD_TESTING)
         test/pow.cpp
         test/value.cpp
         test/caps.cpp
-        test/drc.cpp
     )
     target_link_libraries(hantek_drc_test PRIVATE hantek_drc doctest::doctest)
     add_test(NAME hantek_drc_test COMMAND hantek_drc_test)

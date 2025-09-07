@@ -1,7 +1,6 @@
 #include "caps.hpp"
 
 namespace hantek_drc {
-
 caps caps::hantek_6254bd() {
     return caps {
         .max_channels = 4,
@@ -10,5 +9,4 @@ caps caps::hantek_6254bd() {
         .y_div = 8
     };
 }
-
 }

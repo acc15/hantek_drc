@@ -14,6 +14,4 @@ struct caps {
     static caps hantek_6254bd();
 };
 
-
-
 }
