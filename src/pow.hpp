@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <array>
+#include <cstdint>
 
 namespace hantek_drc {
 
@@ -41,7 +42,7 @@ template <unsigned int base, typename T = std::uintmax_t>
 constexpr ipow_lookup_array<base, T> ipow_lookup_init() {
     ipow_lookup_array<base, T> arr;
     T v = 1;
-    for (size_t i = 0; i < arr.size(); ++i) {
+    for (std::size_t i = 0; i < arr.size(); ++i) {
         arr[i] = v;
         v *= base;
     }

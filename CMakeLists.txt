@@ -27,6 +27,9 @@ endif()
 set(SRC 
     src/caps.cpp
     src/value.cpp
+    src/channel.cpp
+    src/info.cpp
+    src/file.cpp
 )
 
 set(HEADERS 
@@ -49,6 +52,7 @@ if (BUILD_TESTING)
         test/pow.cpp
         test/value.cpp
         test/caps.cpp
+        test/file.cpp
     )
     target_link_libraries(hantek_drc_test PRIVATE hantek_drc doctest::doctest)
     add_test(NAME hantek_drc_test COMMAND hantek_drc_test)
