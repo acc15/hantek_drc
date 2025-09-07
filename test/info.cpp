@@ -40,13 +40,8 @@ TEST_CASE("read_channels") {
                 .voltage = 1,
                 .coupling = 1,
                 .multiplier = 1,
-                .unknown_0 = 0,
-                .unknown_1 = 0,
-                .unknown_2 = 0,
                 .lever_1 = 10,
-                .lever_2 = 10,
-                .unknown_3 = 0,
-                .unknown_4 = 0
+                .lever_2 = 10
            })
            << binary_value<std::uint32_t>(0)
            << binary_value<std::uint32_t>(0);
@@ -62,5 +57,20 @@ TEST_CASE("read_channels") {
     REQUIRE_EQ( i.channels[0].multiplier, 1 );
     REQUIRE_EQ( i.channels[0].lever, 10 );
     REQUIRE_EQ( &i.channels[0].info, &i );
+
+}
+
+TEST_CASE("read_general") {
+
+    info i(caps::hantek_6254bd());
+
+    std::stringstream stream;
+    stream << binary_value(file_general {
+        .timediv = 10
+    });
+
+    i.read_general(stream);
+    REQUIRE( stream.good() );
+    REQUIRE_EQ( i.timediv, 10 );
 
 }
