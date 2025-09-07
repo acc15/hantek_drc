@@ -25,11 +25,16 @@ endif()
 
 
 set(SRC 
-    src/drc.cpp
     src/caps.cpp
+    src/value.cpp
 )
 
 set(HEADERS 
+    src/caps.hpp
+    src/coupling.hpp
+    src/channel.hpp
+    src/info.hpp
+    src/value.hpp
     src/drc.hpp
 )
 
@@ -42,8 +47,10 @@ if (BUILD_TESTING)
 
     add_executable(hantek_drc_test 
         test/main.cpp
-        test/drc.cpp
+        test/pow.cpp
+        test/value.cpp
         test/caps.cpp
+        test/drc.cpp
     )
     target_link_libraries(hantek_drc_test PRIVATE hantek_drc doctest::doctest)
     add_test(NAME hantek_drc_test COMMAND hantek_drc_test)
