@@ -52,7 +52,7 @@ if (BUILD_TESTING)
         test/pow.cpp
         test/value.cpp
         test/caps.cpp
-        test/file.cpp
+        test/info.cpp
     )
     target_link_libraries(hantek_drc_test PRIVATE hantek_drc doctest::doctest)
     add_test(NAME hantek_drc_test COMMAND hantek_drc_test)

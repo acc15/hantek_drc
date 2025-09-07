@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <array>
-#include <istream>
 
 namespace hantek_drc {
 
@@ -17,18 +16,18 @@ struct file_signature {
     std::uint16_t unknown_0; // 20
     bool is_valid() const;
 };
-std::istream& operator>>(std::istream& stream, file_signature&& signature);
 
 struct file_channel {
     std::uint16_t voltage; // 2
     std::uint16_t coupling; // 4
-    std::uint32_t multiplier; // 8
-    std::uint32_t unknown_0; // 12
-    std::uint16_t unknown_1; // 14
+    std::uint16_t multiplier; // 8
+    std::uint16_t unknown_0; // 10
+    std::uint32_t unknown_1; // 12
+    std::uint32_t unknown_2; // 12
     std::uint16_t lever_1; // 16
     std::uint16_t lever_2; // 18
-    std::uint32_t unknown_2; // 22
-    std::uint32_t unknown_3; // 26
+    std::uint32_t unknown_3; // 22
+    std::uint32_t unknown_4; // 26
 };
 
 struct file_general {
