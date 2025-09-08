@@ -7,6 +7,8 @@
 #include "info.h"
 
 typedef enum hantek_drc_data_type {
+    HANTEK_DRC_DATA_TYPE_F32,    
+    HANTEK_DRC_DATA_TYPE_F64,
     HANTEK_DRC_DATA_TYPE_U8,
     HANTEK_DRC_DATA_TYPE_U16,
     HANTEK_DRC_DATA_TYPE_U32,
@@ -14,9 +16,7 @@ typedef enum hantek_drc_data_type {
     HANTEK_DRC_DATA_TYPE_I8,
     HANTEK_DRC_DATA_TYPE_I16,
     HANTEK_DRC_DATA_TYPE_I32,
-    HANTEK_DRC_DATA_TYPE_I64,
-    HANTEK_DRC_DATA_TYPE_F32,    
-    HANTEK_DRC_DATA_TYPE_F64,
+    HANTEK_DRC_DATA_TYPE_I64
 } hantek_drc_data_type;
 
 size_t hantek_drc_data_type_size(enum hantek_drc_data_type type);
