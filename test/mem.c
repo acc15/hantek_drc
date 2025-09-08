@@ -8,10 +8,10 @@ START_TEST(write_mem)
     ck_assert(hantek_drc_read_file("samples/data/ch_1_timediv_20ms_vdiv_500mv_triangle_full_scale.0.drc", &info));
     ck_assert_uint_eq(info.channel_count, 1);
     ck_assert_uint_eq(info.frame_count, 25);
-    ck_assert_float_eq(hantek_drc_channel_volts(&info.channel[0]), 0.5f);
-    ck_assert_float_eq(hantek_drc_info_sampling_rate(&info), 12500.f);
+    ck_assert_uint_eq(hantek_drc_channel_volts_milli(&info.channel[0]), 500ULL);
+    ck_assert_uint_eq(hantek_drc_info_sampling_rate_milli(&info), 12500000ULL);
     
-    hantek_drc_mem_payload* payload = (hantek_drc_mem_payload*)info.payload;
+    hantek_drc_mem_payload* payload = (hantek_drc_mem_payload*)info.frame_handler.payload;
     float*** data = (float***) payload->data;
 
     float tol = 0.0001f;

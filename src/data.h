@@ -34,11 +34,16 @@ typedef union hantek_drc_data_value {
     double_t f64;
 } hantek_drc_data_value;
 
-typedef struct hantek_drc_data_fn {
+typedef struct hantek_drc_data_type_value {
     hantek_drc_data_type type;
-    hantek_drc_data_value (*map)(hantek_drc_channel* channel, struct hantek_drc_data_fn* fn, int16_t data);
+    hantek_drc_data_value value;
+} hantek_drc_data_type_value;
+
+typedef struct hantek_drc_data_callback {
+    hantek_drc_data_type type;
+    hantek_drc_data_value (*map)(struct hantek_drc_data_callback* fn, hantek_drc_channel* channel, int16_t data);
     void* payload;
 } hantek_drc_data_fn;
 
-hantek_drc_data_value hantek_drc_data_millivolts(hantek_drc_channel* channel, hantek_drc_data_fn* fn, int16_t data);
-void* hantek_drc_data_frame(hantek_drc_channel* channel, hantek_drc_data_fn* fn, const int16_t* frame);
+hantek_drc_data_value hantek_drc_data_millivolts(hantek_drc_data_fn* fn, hantek_drc_channel* channel, int16_t data);
+void* hantek_drc_data_frame(hantek_drc_data_fn* fn, hantek_drc_channel* channel, const int16_t* frame);

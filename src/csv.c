@@ -2,11 +2,11 @@
 #include <stdlib.h>
 
 bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
-    hantek_drc_csv_payload* payload = (hantek_drc_csv_payload*) channel->info->payload;
+    hantek_drc_csv_payload* payload = (hantek_drc_csv_payload*) channel->info->frame_handler.payload;
     FILE* file = payload->csv_file;
     size_t buffer_length = channel->info->buffer_length;
     for (size_t i = 0; i < buffer_length; ++i) {
-        hantek_drc_data_value value = payload->data_fn.map(channel, &payload->data_fn, buffer[i]);
+        hantek_drc_data_value value = payload->data_fn.map(&payload->data_fn, channel, buffer[i]);
         int result = fprintf(file, "%zu\t%zu\t%zu\t%f\n", 
             channel->number + 1, channel->info->frame_count, i, value.f32);
         if (result < 0) {
@@ -17,13 +17,14 @@ bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
 }
 
 void hantek_drc_csv_free(hantek_drc_info* info) {
-    if (info->payload != NULL) {
-        hantek_drc_csv_payload* payload = (hantek_drc_csv_payload*) info->payload;
+    hantek_drc_frame_handler* fh = (hantek_drc_frame_handler*) &info->frame_handler;
+    if (fh->payload != NULL) {
+        hantek_drc_csv_payload* payload = (hantek_drc_csv_payload*) fh->payload;
         if (payload->csv_file != NULL) {
             fclose(payload->csv_file);
         }
-        free(info->payload);
-        info->payload = NULL;
+        free(payload);
+        fh->payload = NULL;
     }
 }
 
@@ -42,9 +43,10 @@ bool hantek_drc_csv_init(hantek_drc_info* info, const char* path, hantek_drc_dat
     payload->csv_file = csv_file;
     payload->data_fn = data_fn;
     
-    info->payload = payload;
-    info->on_frame = &hantek_drc_csv_frame;
-    info->on_free = &hantek_drc_csv_free;
-
+    info->frame_handler = (hantek_drc_frame_handler) {
+        .on_frame = &hantek_drc_csv_frame,
+        .on_free = &hantek_drc_csv_free,
+        .payload = payload
+    };
     return true;
 }

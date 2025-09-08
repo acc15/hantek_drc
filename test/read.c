@@ -15,8 +15,8 @@ START_TEST(read_file)
     ck_assert_uint_eq(info.buffer_length, HANTEK_DRC_DATA_BUFFER_LENGTH);
     ck_assert_uint_eq(info.channel[0].index, 0);
     ck_assert_uint_eq(info.channel[0].number, 0);
-    ck_assert_float_eq(hantek_drc_channel_volts(&info.channel[0]), 1.f);
-    ck_assert_float_eq(hantek_drc_info_timediv_seconds(&info), 0.01f);
+    ck_assert_uint_eq(hantek_drc_channel_volts_milli(&info.channel[0]), 1000ULL);
+    ck_assert_uint_eq(hantek_drc_info_timediv_nanos(&info), 10000000ULL);
 }
 END_TEST
 

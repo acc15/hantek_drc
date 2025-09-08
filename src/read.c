@@ -120,7 +120,7 @@ bool hantek_drc_read_data(FILE* file, hantek_drc_info* info) {
         if (!has_data) {
             break;
         }
-        if (info->on_frame != NULL && !info->on_frame(channel, buffer)) {
+        if (info->frame_handler.on_frame != NULL && !info->frame_handler.on_frame(channel, buffer)) {
             return false;
         }
         ++channel_index;
@@ -136,7 +136,7 @@ bool hantek_drc_read(FILE* file, hantek_drc_info* info) {
     if (!hantek_drc_read_header(file, info)) {
         return false;
     }
-    if (info->frame_count == 0 && info->on_prepare != NULL && !info->on_prepare(info)) {
+    if (info->frame_count == 0 && info->frame_handler.on_prepare != NULL && !info->frame_handler.on_prepare(info)) {
         return false;
     }
     return hantek_drc_read_data(file, info);
