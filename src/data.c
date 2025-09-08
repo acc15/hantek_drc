@@ -5,7 +5,7 @@
 
 #include "info.h"
 
-size_t hantek_drc_data_type_size(enum hantek_drc_data_type type) {
+size_t hantek_drc_data_type_size(hantek_drc_data_type type) {
     switch (type) {
         case HANTEK_DRC_DATA_TYPE_I64: return sizeof(int64_t);
         case HANTEK_DRC_DATA_TYPE_I32: return sizeof(int32_t);

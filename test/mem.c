@@ -1,4 +1,6 @@
 #include "mem.h"
+#include "../src/mem.h"
+#include "../src/read.h"
 
 START_TEST(write_mem) 
 {

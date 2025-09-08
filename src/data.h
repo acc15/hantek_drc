@@ -19,7 +19,7 @@ typedef enum hantek_drc_data_type {
     HANTEK_DRC_DATA_TYPE_I64
 } hantek_drc_data_type;
 
-size_t hantek_drc_data_type_size(enum hantek_drc_data_type type);
+size_t hantek_drc_data_type_size(hantek_drc_data_type type);
 
 typedef union hantek_drc_data_value {
     uint8_t u8;
