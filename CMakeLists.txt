@@ -14,8 +14,6 @@ if(MSVC)
         # Removes unreferenced data or functions that are COMDATs, or that only have internal linkage. 
         # Greatly reduces binary size
         /Zc:inline
-        # Enables correct __cplusplus version reporting to enable new stdlib++ features
-        /Zc:__cplusplus
      )
 else()
      add_compile_options(-Wall -Wextra -Wpedantic -Werror)
@@ -29,6 +27,7 @@ set(SRC
     src/info.c
     src/csv.c
     src/mem.c
+    src/data.c
 )
 
 set(HEADERS 

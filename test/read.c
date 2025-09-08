@@ -4,8 +4,7 @@
 START_TEST(read_file) 
 {
 
-    hantek_drc_info info;
-    hantek_drc_init_6254bd(&info);
+    hantek_drc_info info = hantek_drc_init_6254bd();
 
     //hantek_drc_init_6254bd(&info);
     //hantek_drc_free(&info);

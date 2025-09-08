@@ -53,8 +53,7 @@ typedef struct hantek_drc_info {
 
 } hantek_drc_info;
 
-void hantek_drc_init(struct hantek_drc_info* info);
-void hantek_drc_init_6254bd(struct hantek_drc_info* info);
+struct hantek_drc_info hantek_drc_init_6254bd(void);
 void hantek_drc_free(struct hantek_drc_info* info);
 
 uint64_t hantek_drc_channel_millivolts(const hantek_drc_channel* channel);
@@ -64,22 +63,6 @@ float hantek_drc_info_timediv_seconds(const hantek_drc_info* info);
 uint64_t hantek_drc_info_sampling_rate_milli(const hantek_drc_info* info);
 float hantek_drc_info_sampling_rate(const hantek_drc_info* info);
 int64_t hantek_drc_channel_max_millivolts(const hantek_drc_channel* channel);
-
-float hantek_drc_channel_data_volts_multiplier(const hantek_drc_channel* channel);
-float hantek_drc_channel_data_volts(const hantek_drc_channel* channel, int16_t data);
-float hantek_drc_channel_data_normalize(const hantek_drc_channel* channel, int16_t data);
-uint16_t hantek_drc_channel_data_uint16_10bit(const hantek_drc_channel* channel, int16_t data);
-
-// converts single point of data
-typedef float (*hantek_drc_data_fn)(const hantek_drc_channel*, int16_t);
-hantek_drc_data_fn hantek_drc_data_fn_or_default(hantek_drc_data_fn data_fn);
-
-// converts whole frame to arbitrary data type points
-typedef void* (*hantek_drc_frame_fn)(const hantek_drc_channel*, const int16_t*);
-void* hantek_drc_frame_float_volts(const hantek_drc_channel* channel, const int16_t* data);
-void* hantek_drc_frame_uint16_10bit(const hantek_drc_channel* channel, const int16_t* data);
-
-hantek_drc_frame_fn hantek_drc_frame_fn_or_default(hantek_drc_frame_fn fn);
 
 #ifdef __cplusplus
 }

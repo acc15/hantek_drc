@@ -1,5 +1,4 @@
 #include "csv.h"
-
 #include <stdlib.h>
 
 bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
@@ -7,8 +6,9 @@ bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
     FILE* file = payload->csv_file;
     size_t buffer_length = channel->info->buffer_length;
     for (size_t i = 0; i < buffer_length; ++i) {
+        hantek_drc_data_value value = payload->data_fn.map(channel, &payload->data_fn, buffer[i]);
         int result = fprintf(file, "%zu\t%zu\t%zu\t%f\n", 
-            channel->number + 1, channel->info->frame_count, i, payload->data_fn(channel, buffer[i]));
+            channel->number + 1, channel->info->frame_count, i, value.f32);
         if (result < 0) {
             return false;
         }
@@ -33,14 +33,14 @@ bool hantek_drc_csv_init(hantek_drc_info* info, const char* path, hantek_drc_dat
         return false;
     }
 
-    hantek_drc_csv_payload* payload = malloc(sizeof(hantek_drc_csv_payload));
+    hantek_drc_csv_payload* payload = (hantek_drc_csv_payload*) malloc(sizeof(hantek_drc_csv_payload));
     if (payload == NULL) {
         fclose(csv_file);
         return false;
     }
 
     payload->csv_file = csv_file;
-    payload->data_fn = hantek_drc_data_fn_or_default(data_fn);
+    payload->data_fn = data_fn;
     
     info->payload = payload;
     info->on_frame = &hantek_drc_csv_frame;
