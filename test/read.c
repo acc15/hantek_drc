@@ -1,14 +1,9 @@
 #include "read.h"
-#include "../src/value.h"
+#include "../src/read.h"
 
 START_TEST(read_file) 
 {
-
     hantek_drc_info info = hantek_drc_init_6254bd();
-
-    //hantek_drc_init_6254bd(&info);
-    //hantek_drc_free(&info);
-
     ck_assert(hantek_drc_read_file("samples/channels/1_ch.0.drc", &info));
     ck_assert_uint_eq(info.channel_count, 1);
     ck_assert_uint_eq(info.frame_count, 9);

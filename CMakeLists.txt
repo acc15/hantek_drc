@@ -24,13 +24,16 @@ set(CMAKE_DEBUG_POSTFIX "d")
 set(SRC 
     src/read.c
     src/value.c
+    src/channel.c
+    src/data.c
     src/info.c
     src/csv.c
     src/mem.c
-    src/data.c
 )
 
 set(HEADERS 
+    src/coupling.h
+    src/channel.h
     src/value.h
     src/info.h
     src/read.h

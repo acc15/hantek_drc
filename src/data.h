@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <math.h>
 
-#include "info.h"
+typedef struct hantek_drc_channel hantek_drc_channel;
 
 typedef enum hantek_drc_data_type {
     HANTEK_DRC_DATA_TYPE_F32,    
@@ -39,11 +39,10 @@ typedef struct hantek_drc_data_type_value {
     hantek_drc_data_value value;
 } hantek_drc_data_type_value;
 
-typedef struct hantek_drc_data_callback {
+typedef struct hantek_drc_data_handler {
     hantek_drc_data_type type;
-    hantek_drc_data_value (*map)(struct hantek_drc_data_callback* fn, hantek_drc_channel* channel, int16_t data);
+    hantek_drc_data_value (*map)(struct hantek_drc_data_handler* fn, hantek_drc_channel* channel, int16_t data);
     void* payload;
-} hantek_drc_data_fn;
+} hantek_drc_data_handler;
 
-hantek_drc_data_value hantek_drc_data_millivolts(hantek_drc_data_fn* fn, hantek_drc_channel* channel, int16_t data);
-void* hantek_drc_data_frame(hantek_drc_data_fn* fn, hantek_drc_channel* channel, const int16_t* frame);
+void* hantek_drc_data_frame(hantek_drc_data_handler* fn, hantek_drc_channel* channel, const int16_t* frame);

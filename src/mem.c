@@ -37,7 +37,7 @@ bool hantek_drc_mem_frame(hantek_drc_channel* channel, const int16_t* buffer) {
         }
         payload->frames_allocated = frames_allocated;
     }
-    void* frame_data = hantek_drc_data_frame(&payload->data_fn, channel, buffer);
+    void* frame_data = hantek_drc_data_frame(&channel->info->data_handler, channel, buffer);
     if (frame_data == NULL) {
         return false;
     }
@@ -66,12 +66,11 @@ void hantek_drc_mem_free(hantek_drc_info* info) {
     }
 }
 
-bool hantek_drc_mem_init(hantek_drc_info* info, hantek_drc_data_fn data_fn) {
+bool hantek_drc_mem_init(hantek_drc_info* info) {
     hantek_drc_mem_payload* payload = calloc(1, sizeof(hantek_drc_mem_payload));
     if (payload == NULL) {
         return false;
     }
-    payload->data_fn = data_fn;
     info->frame_handler = (hantek_drc_frame_handler) {
         .on_prepare = &hantek_drc_mem_prepare,
         .on_frame = &hantek_drc_mem_frame,

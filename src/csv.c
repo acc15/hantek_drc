@@ -6,7 +6,7 @@ bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
     FILE* file = payload->csv_file;
     size_t buffer_length = channel->info->buffer_length;
     for (size_t i = 0; i < buffer_length; ++i) {
-        hantek_drc_data_value value = payload->data_fn.map(&payload->data_fn, channel, buffer[i]);
+        hantek_drc_data_value value = channel->info->data_handler.map(&channel->info->data_handler, channel, buffer[i]);
         int result = fprintf(file, "%zu\t%zu\t%zu\t%f\n", 
             channel->number + 1, channel->info->frame_count, i, value.f32);
         if (result < 0) {
@@ -28,7 +28,7 @@ void hantek_drc_csv_free(hantek_drc_info* info) {
     }
 }
 
-bool hantek_drc_csv_init(hantek_drc_info* info, const char* path, hantek_drc_data_fn data_fn) {
+bool hantek_drc_csv_init(hantek_drc_info* info, const char* path) {
     FILE* csv_file = fopen(path, "wt");
     if (csv_file == NULL) {
         return false;
@@ -41,8 +41,6 @@ bool hantek_drc_csv_init(hantek_drc_info* info, const char* path, hantek_drc_dat
     }
 
     payload->csv_file = csv_file;
-    payload->data_fn = data_fn;
-    
     info->frame_handler = (hantek_drc_frame_handler) {
         .on_frame = &hantek_drc_csv_frame,
         .on_free = &hantek_drc_csv_free,

@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "info.h"
+
 size_t hantek_drc_data_type_size(enum hantek_drc_data_type type) {
     switch (type) {
         case HANTEK_DRC_DATA_TYPE_I64: return sizeof(int64_t);
@@ -18,25 +20,13 @@ size_t hantek_drc_data_type_size(enum hantek_drc_data_type type) {
     }
 }
 
-hantek_drc_data_value hantek_drc_data_millivolts(hantek_drc_data_fn* fn, hantek_drc_channel* channel, int16_t data) {
+hantek_drc_data_value hantek_drc_data_millivolts(hantek_drc_data_handler* fn, hantek_drc_channel* channel, int16_t data) {
     (void)fn;
-    hantek_drc_data_type_value scale = (hantek_drc_data_type_value) { 
-        .type = HANTEK_DRC_DATA_TYPE_I64, 
-        .value = {.i64 = hantek_drc_channel_max_volts_milli(channel)} 
-    };
-    switch (scale.type) {
-    case HANTEK_DRC_DATA_TYPE_U8:  scale.value.u8  *= data; break;
-    case HANTEK_DRC_DATA_TYPE_U16: scale.value.u16 *= data; break;
-    case HANTEK_DRC_DATA_TYPE_U32: scale.value.u32 *= data; break;
-    case HANTEK_DRC_DATA_TYPE_U64: scale.value.u64 *= data; break;
-    case HANTEK_DRC_DATA_TYPE_I8:  scale.value.i8  *= data; break;
-    case HANTEK_DRC_DATA_TYPE_I16: scale.value.i16 *= data; break;
-    case HANTEK_DRC_DATA_TYPE_I32: scale.value.i32 *= data; break;
-    case HANTEK_DRC_DATA_TYPE_I64: scale.value.i64 *= data; break;
-    case HANTEK_DRC_DATA_TYPE_F32: scale.value.f32 *= data; break;
-    case HANTEK_DRC_DATA_TYPE_F64: scale.value.f64 *= data; break;
-    }
-    return scale.value;
+    (void)channel;
+    (void)data;
+    //int64_t scale = hantek_drc_channel_max_volts_milli(channel);
+    //fn->payload
+    return (hantek_drc_data_value) { .f32 = 1.0f };
 /*
     //fn->payload
     if (fn->type == HANTEK_DRC_DATA_TYPE_F32) {
@@ -59,7 +49,7 @@ hantek_drc_data_value hantek_drc_data_millivolts(hantek_drc_data_fn* fn, hantek_
     }*/
 }
 
-void* hantek_drc_data_frame(hantek_drc_data_fn* fn, hantek_drc_channel* channel, const int16_t* frame) {
+void* hantek_drc_data_frame(hantek_drc_data_handler* fn, hantek_drc_channel* channel, const int16_t* frame) {
     size_t sz = hantek_drc_data_type_size(fn->type);
     void* data = malloc(sz * channel->info->buffer_length);
     if (data == NULL) {

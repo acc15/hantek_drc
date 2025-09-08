@@ -4,6 +4,9 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#include "channel.h"
+#include "data.h"
+
 #ifndef HANTEK_DRC_MAX_CHANNELS
 #   define HANTEK_DRC_MAX_CHANNELS 8
 #endif
@@ -11,24 +14,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-typedef enum hantek_drc_coupling {
-    HANTEK_DRC_COUPLING_DC,
-    HANTEK_DRC_COUPLING_AC,
-    HANTEK_DRC_COUPLING_GND
-} hantek_drc_coupling;
-
-typedef struct hantek_drc_info hantek_drc_info;
-
-typedef struct hantek_drc_channel {
-    size_t index; // zero-based index of enabled channel
-    size_t number; // zero-based channel number (0 - 1CH, 1 - 2CH, etc)
-    uint16_t voltage; // voltage index
-    uint16_t multiplier; // multiplier index (most cases - 10^multiplier)
-    hantek_drc_coupling coupling;
-    uint16_t lever; // signal y offset (lever) - values [0..255]
-    hantek_drc_info* info;
-} hantek_drc_channel;
 
 typedef struct hantek_drc_frame_handler {
     bool(*on_frame)(hantek_drc_channel* channel, const int16_t* buffer);
@@ -45,6 +30,7 @@ typedef struct hantek_drc_info {
     size_t y_div;
 
     hantek_drc_frame_handler frame_handler;
+    hantek_drc_data_handler data_handler;
     
     // parsed data
     hantek_drc_channel channel[HANTEK_DRC_MAX_CHANNELS];
@@ -57,9 +43,6 @@ typedef struct hantek_drc_info {
 
 hantek_drc_info hantek_drc_init_6254bd(void);
 void hantek_drc_free(struct hantek_drc_info* info);
-
-uint64_t hantek_drc_channel_volts_milli(const hantek_drc_channel* channel);
-uint64_t hantek_drc_channel_max_volts_milli(const hantek_drc_channel* channel);
 
 uint64_t hantek_drc_info_timediv_nanos(const hantek_drc_info* info);
 uint64_t hantek_drc_info_sampling_rate_milli(const hantek_drc_info* info);

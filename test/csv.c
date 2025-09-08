@@ -3,8 +3,7 @@
 START_TEST(write_csv) 
 {
     hantek_drc_info info = hantek_drc_init_6254bd();
-    hantek_drc_csv_init(&info, "build/test.csv", 
-        (hantek_drc_data_fn) {.type = HANTEK_DRC_DATA_TYPE_F32, .map = &hantek_drc_data_millivolts, .payload=NULL});
+    hantek_drc_csv_init(&info, "build/test.csv");
     ck_assert(hantek_drc_read_file("samples/data/ch_1_timediv_20ms_vdiv_500mv_triangle_full_scale.0.drc", &info));
     hantek_drc_free(&info);
 
