@@ -23,19 +23,20 @@ else()
      add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
-
 set(SRC 
     src/caps.cpp
-    src/value.cpp
-    src/channel.cpp
-    src/info.cpp
     src/file.cpp
+    src/info.cpp
+    src/value.cpp
 )
 
 set(HEADERS 
+    src/pow.hpp
+    src/binary.hpp
     src/caps.hpp
-    src/coupling.hpp
     src/channel.hpp
+    src/coupling.hpp
+    src/file.hpp
     src/info.hpp
     src/value.hpp
 )
