@@ -13,8 +13,8 @@ START_TEST(write_mem)
     ck_assert_uint_eq(hantek_drc_channel_volts_milli(&info.channel[0]), 500ULL);
     ck_assert_uint_eq(hantek_drc_info_sampling_rate_milli(&info), 12500000ULL);
     
-    hantek_drc_mem_payload* payload = (hantek_drc_mem_payload*)info.frame_handler.payload;
-    float*** data = (float***) payload->data;
+    hantek_drc_mem_params* params = (hantek_drc_mem_params*)info.frame_handler.params;
+    float*** data = (float***) params->data;
 
     float tol = 0.0001f;
     

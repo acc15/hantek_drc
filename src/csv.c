@@ -3,19 +3,19 @@
 #include <stdarg.h>
 
 bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
-    hantek_drc_csv_payload* payload = (hantek_drc_csv_payload*) channel->info->frame_handler.payload;
-    FILE* file = payload->csv_file;
+    hantek_drc_csv_params* params = (hantek_drc_csv_params*) channel->info->frame_handler.params;
+    FILE* file = params->file;
     size_t buffer_length = channel->info->buffer_length;
-    hantek_drc_csv_payload_column cols = payload->columns;
+    hantek_drc_csv_column cols = params->columns;
     for (size_t i = 0; i < buffer_length; ++i) {
         
         size_t col_num = 0;
-        hantek_drc_csv_payload_column remaining_cols = cols;
+        hantek_drc_csv_column remaining_cols = cols;
         while (remaining_cols != 0) {
-            hantek_drc_csv_payload_column col = remaining_cols & 0x07;
+            hantek_drc_csv_column col = remaining_cols & 0x07;
 
             int pr = 0;
-            if (col_num > 0 && fputs(payload->column_separator, file) == EOF) {
+            if (col_num > 0 && fputs(params->column_separator, file) == EOF) {
                 return false;
             }
 
@@ -63,7 +63,7 @@ bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
             remaining_cols >>= 3;
             ++col_num;
         }
-        if (fputs(payload->line_separator, file) == EOF) {
+        if (fputs(params->line_separator, file) == EOF) {
             return false;
         }
         
@@ -72,56 +72,79 @@ bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
 }
 
 void hantek_drc_csv_free(hantek_drc_info* info) {
-    hantek_drc_frame_handler* fh = (hantek_drc_frame_handler*) &info->frame_handler;
-    if (fh->payload != NULL) {
-        hantek_drc_csv_payload* payload = (hantek_drc_csv_payload*) fh->payload;
-        if (payload->csv_file != NULL) {
-            fclose(payload->csv_file);
+    hantek_drc_frame_handler* fh = &info->frame_handler;
+    if (fh->params != NULL) {
+        hantek_drc_csv_params* params = (hantek_drc_csv_params*) fh->params;
+        if (params->file != NULL && params->should_close) {
+            fclose(params->file);
         }
-        free(payload);
-        fh->payload = NULL;
+        if (params->should_free) {
+            free(params);
+        }
+        fh->params = NULL;
     }
 }
 
-bool hantek_drc_csv_init(hantek_drc_info* info, hantek_drc_csv_payload payload_example) {
-    if (payload_example.csv_file == NULL) {
+bool hantek_drc_csv_params_ext(hantek_drc_info* info, hantek_drc_csv_params* params) {
+    if (params->file == NULL) {
+        if (params->path != NULL) {
+            params->file = fopen(params->path, "wt");
+            params->should_close = true;
+        } else {
+            return false;
+        }
+    }
+    
+    if (params->file == NULL) {
         return false;
     }
 
-    hantek_drc_csv_payload* payload = (hantek_drc_csv_payload*) calloc(1, sizeof(hantek_drc_csv_payload));
-    if (payload == NULL) {
-        return false;
-    }
-
-    *payload = payload_example;
-    if (payload->columns == HANTEK_DRC_CSV_COLUMN_DEFAULT) {
-        payload->columns = hantek_drc_csv_columns(4, 
+    if (params->columns == HANTEK_DRC_CSV_COLUMN_DEFAULT) {
+        params->columns = hantek_drc_csv_columns(4, 
             HANTEK_DRC_CSV_COLUMN_CHANNEL, 
             HANTEK_DRC_CSV_COLUMN_FRAME, 
             HANTEK_DRC_CSV_COLUMN_INDEX,
             HANTEK_DRC_CSV_COLUMN_DATA
         );
     }
-    if (payload->column_separator == NULL) {
-        payload->column_separator = "\t";
+
+    if (params->column_separator == NULL) {
+        params->column_separator = "\t";
     }
-    if (payload->line_separator == NULL) {
-        payload->line_separator = "\n";
+
+    if (params->line_separator == NULL) {
+        params->line_separator = "\n";
     }
+
     info->frame_handler = (hantek_drc_frame_handler) {
         .on_frame = &hantek_drc_csv_frame,
         .on_free = &hantek_drc_csv_free,
-        .payload = payload
+        .params = params
     };
     return true;
 }
 
-hantek_drc_csv_payload_column hantek_drc_csv_columns(size_t count, ...) {
+bool hantek_drc_csv_params_alloc(hantek_drc_info* info, hantek_drc_csv_params params_example) {
+    hantek_drc_csv_params* params = (hantek_drc_csv_params*) calloc(1, sizeof(hantek_drc_csv_params));
+    if (params == NULL) {
+        return false;
+    }
+
+    *params = params_example;
+    params->should_free = true;
+    if (!hantek_drc_csv_params_ext(info, params)) {
+        free(params);
+        return false;
+    }
+    return true;
+}
+
+hantek_drc_csv_column hantek_drc_csv_columns(size_t count, ...) {
     va_list args;
     va_start(args, count);
-    hantek_drc_csv_payload_column result = 0;
+    hantek_drc_csv_column result = 0;
     for (size_t i = 0; i < count; ++i) {
-        hantek_drc_csv_payload_column col = va_arg(args, hantek_drc_csv_payload_column);
+        hantek_drc_csv_column col = va_arg(args, hantek_drc_csv_column);
         result |= (col << 3 * i);
     }
     va_end(args);

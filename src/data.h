@@ -40,24 +40,24 @@ typedef struct hantek_drc_data_handler {
     hantek_drc_data_type type;
     hantek_drc_data_value (*on_data)(hantek_drc_channel* channel, int16_t data);
     void (*on_free)(hantek_drc_info* info);
-    void* payload;
+    void* params;
 } hantek_drc_data_handler;
 
 hantek_drc_data_value hantek_drc_data(hantek_drc_channel* channel, int16_t data);
 void* hantek_drc_data_frame(hantek_drc_channel* channel, const int16_t* frame);
 
-typedef struct hantek_drc_data_format_payload {
+typedef struct hantek_drc_data_format_params {
     int64_t (*multiplier_fn)(const hantek_drc_channel*);
     int64_t (*divider_fn)(const hantek_drc_channel*);
     int64_t multiplier;
     int64_t divider;
     bool positive;
-} hantek_drc_data_format_payload;
+} hantek_drc_data_format_params;
 
 bool hantek_drc_data_format_init(
     hantek_drc_info* info, 
     hantek_drc_data_type type, 
-    hantek_drc_data_format_payload payload
+    hantek_drc_data_format_params params
 );
 bool hantek_drc_data_format_raw(hantek_drc_info* info, hantek_drc_data_type type);
 bool hantek_drc_data_format_volts_milli(hantek_drc_info* info, hantek_drc_data_type type);

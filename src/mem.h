@@ -7,10 +7,10 @@
 extern "C" {
 #endif
 
-typedef struct hantek_drc_mem_payload {
+typedef struct hantek_drc_mem_params {
     void*** data;
     size_t frames_allocated;
-} hantek_drc_mem_payload;
+} hantek_drc_mem_params;
 
 bool hantek_drc_mem_prepare(hantek_drc_info* info);
 bool hantek_drc_mem_frame(hantek_drc_channel* channel, const int16_t* buffer);

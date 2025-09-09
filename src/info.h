@@ -19,7 +19,7 @@ typedef struct hantek_drc_frame_handler {
     bool(*on_frame)(hantek_drc_channel* channel, const int16_t* buffer);
     bool(*on_prepare)(hantek_drc_info* info);
     void(*on_free)(hantek_drc_info* info);
-    void* payload; // additional custom info for callbacks
+    void* params; // additional custom info for callbacks
 } hantek_drc_frame_handler;
 
 typedef struct hantek_drc_info {

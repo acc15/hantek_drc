@@ -57,14 +57,14 @@ void* hantek_drc_data_frame(hantek_drc_channel* channel, const int16_t* frame) {
 
 hantek_drc_data_value hantek_drc_data_format(hantek_drc_channel* channel, int16_t data) {
     hantek_drc_data_handler* handler = &channel->info->data_handler;
-    hantek_drc_data_format_payload* payload = (hantek_drc_data_format_payload*)channel->info->data_handler.payload;
+    hantek_drc_data_format_params* params = (hantek_drc_data_format_params*)channel->info->data_handler.params;
     
-    int64_t multiplier = payload->multiplier_fn != NULL ? payload->multiplier_fn(channel) : payload->multiplier;
+    int64_t multiplier = params->multiplier_fn != NULL ? params->multiplier_fn(channel) : params->multiplier;
     if (multiplier == 0) {
         multiplier = 1;
     }
 
-    int64_t divider = payload->divider_fn != NULL ? payload->divider_fn(channel) : payload->divider;
+    int64_t divider = params->divider_fn != NULL ? params->divider_fn(channel) : params->divider;
     if (divider == 0) {
         divider = 1;
     }
@@ -74,13 +74,13 @@ hantek_drc_data_value hantek_drc_data_format(hantek_drc_channel* channel, int16_
     hantek_drc_data_value result;
     if (handler->type == HANTEK_DRC_DATA_TYPE_F32) {
         float_t v = ((float_t) value) / divider;
-        result.f32 = payload->positive && v < 0.0 ? 0.f : v;
+        result.f32 = params->positive && v < 0.0 ? 0.f : v;
     } else if (handler->type == HANTEK_DRC_DATA_TYPE_F64) {
         double_t v = ((double_t) value) / divider;
-        result.f64 = payload->positive && v < 0.0 ? 0.0 : v;
+        result.f64 = params->positive && v < 0.0 ? 0.0 : v;
     } else {
         value /= divider;
-        if (payload->positive && value < 0) {
+        if (params->positive && value < 0) {
             value = 0;
         }
         switch (handler->type) {
@@ -100,19 +100,19 @@ hantek_drc_data_value hantek_drc_data_format(hantek_drc_channel* channel, int16_
 bool hantek_drc_data_format_init(
     hantek_drc_info* info, 
     hantek_drc_data_type type, 
-    hantek_drc_data_format_payload payload_example
+    hantek_drc_data_format_params params_example
 ) {
-    hantek_drc_data_format_payload* payload = (hantek_drc_data_format_payload*) 
-        calloc(1, sizeof(hantek_drc_data_format_payload));
-    if (payload == NULL) {
+    hantek_drc_data_format_params* params = (hantek_drc_data_format_params*) 
+        calloc(1, sizeof(hantek_drc_data_format_params));
+    if (params == NULL) {
         return false;
     }
-    *payload = payload_example;
+    *params = params_example;
     info->data_handler = (hantek_drc_data_handler) {
         .type = type,
         .on_data = &hantek_drc_data_format,
         .on_free = &hantek_drc_data_format_free,
-        .payload = payload
+        .params = params
     };
     return true;
 }
@@ -122,14 +122,14 @@ bool hantek_drc_data_format_raw(hantek_drc_info* info, hantek_drc_data_type type
 }
 
 bool hantek_drc_data_format_volts_milli(hantek_drc_info* info, hantek_drc_data_type type) {
-    return hantek_drc_data_format_init(info, type, (hantek_drc_data_format_payload) {
+    return hantek_drc_data_format_init(info, type, (hantek_drc_data_format_params) {
         .multiplier_fn = &hantek_drc_channel_max_volts_milli,
         .divider = INT16_MAX
     });
 }
 
 bool hantek_drc_data_format_volts(hantek_drc_info* info, hantek_drc_data_type type) {
-    return hantek_drc_data_format_init(info, type, (hantek_drc_data_format_payload) {
+    return hantek_drc_data_format_init(info, type, (hantek_drc_data_format_params) {
         .multiplier_fn = &hantek_drc_channel_max_volts_milli,
         .divider = INT16_MAX * 1000ULL
     });
@@ -138,7 +138,7 @@ bool hantek_drc_data_format_volts(hantek_drc_info* info, hantek_drc_data_type ty
 bool hantek_drc_data_format_muldiv(
     hantek_drc_info* info, hantek_drc_data_type type, bool positive, int64_t multiplier, int64_t divider
 ) {
-    return hantek_drc_data_format_init(info, type, (hantek_drc_data_format_payload) {
+    return hantek_drc_data_format_init(info, type, (hantek_drc_data_format_params) {
         .divider = divider,
         .multiplier = multiplier,
         .positive = positive
@@ -150,8 +150,8 @@ bool hantek_drc_data_format_mul(hantek_drc_info* info, hantek_drc_data_type type
 }
 
 void hantek_drc_data_format_free(hantek_drc_info* info) {
-    if (info->data_handler.payload != NULL) {
-        free(info->data_handler.payload);
-        info->data_handler.payload = NULL;
+    if (info->data_handler.params != NULL) {
+        free(info->data_handler.params);
+        info->data_handler.params = NULL;
     }
 }
