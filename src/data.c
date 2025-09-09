@@ -97,19 +97,16 @@ hantek_drc_data_value hantek_drc_data_format(hantek_drc_channel* channel, int16_
     return result;
 }
 
-bool hantek_drc_data_format_init(
-    hantek_drc_info* info, 
-    hantek_drc_data_type type, 
-    hantek_drc_data_format_params params_example
-) {
+bool hantek_drc_data_format_alloc(hantek_drc_info* info, hantek_drc_data_format_params params_example) {
     hantek_drc_data_format_params* params = (hantek_drc_data_format_params*) 
         calloc(1, sizeof(hantek_drc_data_format_params));
     if (params == NULL) {
         return false;
     }
     *params = params_example;
+    params->should_free = true;
     info->data_handler = (hantek_drc_data_handler) {
-        .type = type,
+        .type = params->type,
         .on_data = &hantek_drc_data_format,
         .on_free = &hantek_drc_data_format_free,
         .params = params
@@ -117,41 +114,58 @@ bool hantek_drc_data_format_init(
     return true;
 }
 
-bool hantek_drc_data_format_raw(hantek_drc_info* info, hantek_drc_data_type type) {
-    return hantek_drc_data_format_muldiv(info, type, 1, 1, false);
+bool hantek_drc_data_format_ext(hantek_drc_info* info, hantek_drc_data_format_params* params) {
+    info->data_handler = (hantek_drc_data_handler) {
+        .type = params->type,
+        .on_data = &hantek_drc_data_format,
+        .on_free = &hantek_drc_data_format_free,
+        .params = params
+    };
+    return true;
 }
 
-bool hantek_drc_data_format_volts_milli(hantek_drc_info* info, hantek_drc_data_type type) {
-    return hantek_drc_data_format_init(info, type, (hantek_drc_data_format_params) {
+hantek_drc_data_format_params hantek_drc_data_format_raw(hantek_drc_data_type type) {
+    return hantek_drc_data_format_muldiv(type, 1, 1, false);
+}
+
+hantek_drc_data_format_params hantek_drc_data_format_volts_milli(hantek_drc_data_type type) {
+    return (hantek_drc_data_format_params) {
+        .type = type,
         .multiplier_fn = &hantek_drc_channel_max_volts_milli,
         .divider = INT16_MAX
-    });
+    };
 }
 
-bool hantek_drc_data_format_volts(hantek_drc_info* info, hantek_drc_data_type type) {
-    return hantek_drc_data_format_init(info, type, (hantek_drc_data_format_params) {
+hantek_drc_data_format_params hantek_drc_data_format_volts(hantek_drc_data_type type) {
+    return (hantek_drc_data_format_params) {
+        .type = type,
         .multiplier_fn = &hantek_drc_channel_max_volts_milli,
         .divider = INT16_MAX * 1000ULL
-    });
+    };
 }
 
-bool hantek_drc_data_format_muldiv(
-    hantek_drc_info* info, hantek_drc_data_type type, bool positive, int64_t multiplier, int64_t divider
+hantek_drc_data_format_params hantek_drc_data_format_muldiv(
+    hantek_drc_data_type type, 
+    bool positive, 
+    int64_t multiplier, 
+    int64_t divider
 ) {
-    return hantek_drc_data_format_init(info, type, (hantek_drc_data_format_params) {
+    return (hantek_drc_data_format_params) {
+        .type = type,
         .divider = divider,
         .multiplier = multiplier,
         .positive = positive
-    });
+    };
 }
 
-bool hantek_drc_data_format_mul(hantek_drc_info* info, hantek_drc_data_type type, bool positive, int64_t multiplier) {
-    return hantek_drc_data_format_muldiv(info, type, positive, multiplier, INT16_MAX);
+hantek_drc_data_format_params hantek_drc_data_format_mul(hantek_drc_data_type type, bool positive, int64_t multiplier) {
+    return hantek_drc_data_format_muldiv(type, positive, multiplier, INT16_MAX);
 }
 
 void hantek_drc_data_format_free(hantek_drc_info* info) {
-    if (info->data_handler.params != NULL) {
-        free(info->data_handler.params);
+    hantek_drc_data_format_params* params = (hantek_drc_data_format_params*)info->data_handler.params;
+    if (params != NULL && params->should_free) {
+        free(params);
         info->data_handler.params = NULL;
     }
 }

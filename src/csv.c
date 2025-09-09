@@ -85,7 +85,7 @@ void hantek_drc_csv_free(hantek_drc_info* info) {
     }
 }
 
-bool hantek_drc_csv_params_ext(hantek_drc_info* info, hantek_drc_csv_params* params) {
+bool hantek_drc_csv_ext(hantek_drc_info* info, hantek_drc_csv_params* params) {
     if (params->file == NULL) {
         if (params->path != NULL) {
             params->file = fopen(params->path, "wt");
@@ -94,7 +94,7 @@ bool hantek_drc_csv_params_ext(hantek_drc_info* info, hantek_drc_csv_params* par
             return false;
         }
     }
-    
+
     if (params->file == NULL) {
         return false;
     }
@@ -124,7 +124,7 @@ bool hantek_drc_csv_params_ext(hantek_drc_info* info, hantek_drc_csv_params* par
     return true;
 }
 
-bool hantek_drc_csv_params_alloc(hantek_drc_info* info, hantek_drc_csv_params params_example) {
+bool hantek_drc_csv_alloc(hantek_drc_info* info, hantek_drc_csv_params params_example) {
     hantek_drc_csv_params* params = (hantek_drc_csv_params*) calloc(1, sizeof(hantek_drc_csv_params));
     if (params == NULL) {
         return false;
@@ -132,7 +132,7 @@ bool hantek_drc_csv_params_alloc(hantek_drc_info* info, hantek_drc_csv_params pa
 
     *params = params_example;
     params->should_free = true;
-    if (!hantek_drc_csv_params_ext(info, params)) {
+    if (!hantek_drc_csv_ext(info, params)) {
         free(params);
         return false;
     }

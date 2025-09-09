@@ -23,19 +23,20 @@ typedef enum hantek_drc_csv_column {
 typedef struct hantek_drc_csv_params {
     const char* path;
     FILE* file;
-    bool should_close;
-    bool should_free;
     hantek_drc_csv_column columns;
     const char* column_separator;
     const char* line_separator;
+    bool should_close;
+    bool should_free;
 } hantek_drc_csv_params;
 
-bool hantek_drc_csv_params_ext(hantek_drc_info* info, hantek_drc_csv_params* params);
-bool hantek_drc_csv_params_alloc(hantek_drc_info* info, hantek_drc_csv_params params_copy);
+bool hantek_drc_csv_ext(hantek_drc_info* info, hantek_drc_csv_params* params);
+bool hantek_drc_csv_alloc(hantek_drc_info* info, hantek_drc_csv_params params_copy);
 hantek_drc_csv_column hantek_drc_csv_columns(size_t count, ...);
 
 bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer);
 void hantek_drc_csv_free(hantek_drc_info* info);
+
 #ifdef __cplusplus
 }
 #endif

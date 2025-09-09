@@ -47,36 +47,34 @@ hantek_drc_data_value hantek_drc_data(hantek_drc_channel* channel, int16_t data)
 void* hantek_drc_data_frame(hantek_drc_channel* channel, const int16_t* frame);
 
 typedef struct hantek_drc_data_format_params {
+    hantek_drc_data_type type;
     int64_t (*multiplier_fn)(const hantek_drc_channel*);
     int64_t (*divider_fn)(const hantek_drc_channel*);
     int64_t multiplier;
     int64_t divider;
     bool positive;
+    bool should_free;
 } hantek_drc_data_format_params;
 
-bool hantek_drc_data_format_init(
-    hantek_drc_info* info, 
-    hantek_drc_data_type type, 
-    hantek_drc_data_format_params params
-);
-bool hantek_drc_data_format_raw(hantek_drc_info* info, hantek_drc_data_type type);
-bool hantek_drc_data_format_volts_milli(hantek_drc_info* info, hantek_drc_data_type type);
-bool hantek_drc_data_format_volts(hantek_drc_info* info, hantek_drc_data_type type);
-bool hantek_drc_data_format_muldiv(hantek_drc_info* info, 
+bool hantek_drc_data_format_alloc(hantek_drc_info* info, hantek_drc_data_format_params params);
+bool hantek_drc_data_format_ext(hantek_drc_info* info, hantek_drc_data_format_params* params);
+
+hantek_drc_data_format_params hantek_drc_data_format_raw(hantek_drc_data_type type);
+hantek_drc_data_format_params hantek_drc_data_format_volts_milli(hantek_drc_data_type type);
+hantek_drc_data_format_params hantek_drc_data_format_volts(hantek_drc_data_type type);
+hantek_drc_data_format_params hantek_drc_data_format_muldiv(
     hantek_drc_data_type type, 
     bool positive,
     int64_t multiplier,
     int64_t divider
 );
-
-bool hantek_drc_data_format_mul(hantek_drc_info* info, 
+hantek_drc_data_format_params hantek_drc_data_format_mul(
     hantek_drc_data_type type, 
     bool positive,
     int64_t multiplier
 );
 
 void hantek_drc_data_format_free(hantek_drc_info* info);
-
 
 hantek_drc_data_value hantek_drc_data_format(hantek_drc_channel* channel, int16_t data);
 
