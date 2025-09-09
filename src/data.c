@@ -108,13 +108,11 @@ bool hantek_drc_data_format_init(
         return false;
     }
     *payload = payload_example;
-    
     info->data_handler = (hantek_drc_data_handler) {
         .type = type,
         .on_data = &hantek_drc_data_format,
         .on_free = &hantek_drc_data_format_free,
         .payload = payload
-
     };
     return true;
 }
