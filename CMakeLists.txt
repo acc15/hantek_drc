@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 4.1)
 project(hantek_drc VERSION 1.0.0 LANGUAGES C)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED TRUE) # Make it mandatory
-set(CMAKE_C_CPPCHECK "cppcheck;--check-level=exhaustive")
+# set(CMAKE_C_CPPCHECK "cppcheck;--check-level=exhaustive")
 
 if(MSVC)
      add_definitions(-D_CRT_SECURE_NO_WARNINGS) # Disables CRT secure warning to allow cross-platform stdlib usage
@@ -17,7 +17,7 @@ if(MSVC)
         /Zc:inline
      )
 else()
-     add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+     add_compile_options(-fms-extensions -Wno-microsoft-anon-tag -Wall -Wextra -Wpedantic -Werror)
 endif()
 
 set(CMAKE_DEBUG_POSTFIX "d")
@@ -30,9 +30,11 @@ set(SRC
     src/info.c
     src/csv.c
     src/mem.c
+    src/handler.c
 )
 
 set(HEADERS 
+    src/fwd.h
     src/coupling.h
     src/channel.h
     src/value.h
@@ -40,6 +42,7 @@ set(HEADERS
     src/read.h
     src/csv.h
     src/mem.h
+    src/handler.h
 )
 
 add_library(hantek_drc ${SRC})

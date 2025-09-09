@@ -6,6 +6,7 @@
 
 #include "channel.h"
 #include "data.h"
+#include "handler.h"
 
 #ifndef HANTEK_DRC_MAX_CHANNELS
 #   define HANTEK_DRC_MAX_CHANNELS 8
@@ -16,10 +17,9 @@ extern "C" {
 #endif
 
 typedef struct hantek_drc_frame_handler {
+    struct hantek_drc_handler;
     bool(*on_frame)(hantek_drc_channel* channel, const int16_t* buffer);
     bool(*on_prepare)(hantek_drc_info* info);
-    void(*on_free)(hantek_drc_info* info);
-    void* params; // additional custom info for callbacks
 } hantek_drc_frame_handler;
 
 typedef struct hantek_drc_info {

@@ -5,8 +5,11 @@
 #include <stdbool.h>
 #include <math.h>
 
-typedef struct hantek_drc_channel hantek_drc_channel;
-typedef struct hantek_drc_info hantek_drc_info;
+#include "handler.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef enum hantek_drc_data_type {
     HANTEK_DRC_DATA_TYPE_F32,    
@@ -37,10 +40,9 @@ typedef union hantek_drc_data_value {
 } hantek_drc_data_value;
 
 typedef struct hantek_drc_data_handler {
+    struct hantek_drc_handler;
     hantek_drc_data_type type;
     hantek_drc_data_value (*on_data)(hantek_drc_channel* channel, int16_t data);
-    void (*on_free)(hantek_drc_info* info);
-    void* params;
 } hantek_drc_data_handler;
 
 hantek_drc_data_value hantek_drc_data(hantek_drc_channel* channel, int16_t data);
@@ -53,11 +55,11 @@ typedef struct hantek_drc_data_format_params {
     int64_t multiplier;
     int64_t divider;
     bool positive;
-    bool should_free;
 } hantek_drc_data_format_params;
 
 bool hantek_drc_data_format_alloc(hantek_drc_info* info, hantek_drc_data_format_params params);
 bool hantek_drc_data_format_ext(hantek_drc_info* info, hantek_drc_data_format_params* params);
+void hantek_drc_data_format_free(hantek_drc_info* info);
 
 hantek_drc_data_format_params hantek_drc_data_format_raw(hantek_drc_data_type type);
 hantek_drc_data_format_params hantek_drc_data_format_volts_milli(hantek_drc_data_type type);
@@ -74,8 +76,8 @@ hantek_drc_data_format_params hantek_drc_data_format_mul(
     int64_t multiplier
 );
 
-void hantek_drc_data_format_free(hantek_drc_info* info);
-
 hantek_drc_data_value hantek_drc_data_format(hantek_drc_channel* channel, int16_t data);
 
-
+#ifdef __cplusplus
+}
+#endif

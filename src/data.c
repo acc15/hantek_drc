@@ -104,11 +104,9 @@ bool hantek_drc_data_format_alloc(hantek_drc_info* info, hantek_drc_data_format_
         return false;
     }
     *params = params_example;
-    params->should_free = true;
     info->data_handler = (hantek_drc_data_handler) {
         .type = params->type,
         .on_data = &hantek_drc_data_format,
-        .on_free = &hantek_drc_data_format_free,
         .params = params
     };
     return true;
@@ -118,7 +116,6 @@ bool hantek_drc_data_format_ext(hantek_drc_info* info, hantek_drc_data_format_pa
     info->data_handler = (hantek_drc_data_handler) {
         .type = params->type,
         .on_data = &hantek_drc_data_format,
-        .on_free = &hantek_drc_data_format_free,
         .params = params
     };
     return true;
@@ -160,12 +157,4 @@ hantek_drc_data_format_params hantek_drc_data_format_muldiv(
 
 hantek_drc_data_format_params hantek_drc_data_format_mul(hantek_drc_data_type type, bool positive, int64_t multiplier) {
     return hantek_drc_data_format_muldiv(type, positive, multiplier, INT16_MAX);
-}
-
-void hantek_drc_data_format_free(hantek_drc_info* info) {
-    hantek_drc_data_format_params* params = (hantek_drc_data_format_params*)info->data_handler.params;
-    if (params != NULL && params->should_free) {
-        free(params);
-        info->data_handler.params = NULL;
-    }
 }

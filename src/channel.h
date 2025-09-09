@@ -4,12 +4,11 @@
 #include <stdint.h>
 
 #include "coupling.h"
+#include "fwd.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-typedef struct hantek_drc_info hantek_drc_info;
 
 typedef struct hantek_drc_channel {
     size_t index; // zero-based index of enabled channel
