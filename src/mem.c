@@ -3,15 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-bool hantek_drc_mem_prepare(hantek_drc_info* info) {
-    hantek_drc_mem_params* params = (hantek_drc_mem_params*) info->frame_handler.params;
-    params->channels = calloc(info->channel_count, sizeof(hantek_drc_mem_channel));
-    if (params->channels == NULL) {
-        return false;
-    }
-    return true;
-}
-
 bool hantek_drc_mem_frame(hantek_drc_channel* channel, const int16_t* buffer) {
     hantek_drc_info* info = channel->info;
     hantek_drc_mem_params* params = (hantek_drc_mem_params*) info->frame_handler.params;
@@ -34,7 +25,7 @@ bool hantek_drc_mem_frame(hantek_drc_channel* channel, const int16_t* buffer) {
     if (frame_data == NULL) {
         return false;
     }
-    
+
     mch->frames[mch->recorded] = frame_data;
     ++mch->recorded;
     return true;
@@ -42,7 +33,7 @@ bool hantek_drc_mem_frame(hantek_drc_channel* channel, const int16_t* buffer) {
 
 void hantek_drc_mem_free(hantek_drc_info* info) {
     hantek_drc_mem_params* params = (hantek_drc_mem_params*) info->frame_handler.params;
-    if (params == NULL || params->channels == NULL) {
+    if (params == NULL) {
         return;
     }
     for (size_t i = 0; i < info->channel_count; ++i) {
@@ -56,10 +47,7 @@ void hantek_drc_mem_free(hantek_drc_info* info) {
         }
         free(params->channels[i].frames);
     }
-    free(params->channels);
-    params->channels = NULL;
 }
-
 
 bool hantek_drc_mem_alloc(hantek_drc_info* info) {
     hantek_drc_mem_params* params = calloc(1, sizeof(hantek_drc_mem_params));
@@ -73,7 +61,6 @@ bool hantek_drc_mem_alloc(hantek_drc_info* info) {
 
 bool hantek_drc_mem_ext(hantek_drc_info* info, hantek_drc_mem_params* params) {
     info->frame_handler = (hantek_drc_frame_handler) {
-        .on_prepare = &hantek_drc_mem_prepare,
         .on_frame = &hantek_drc_mem_frame,
         .on_free = &hantek_drc_mem_free,
         .params = params,

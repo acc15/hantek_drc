@@ -1,7 +1,6 @@
 #pragma once
 
 #include "info.h"
-#include "data.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -14,7 +13,7 @@ typedef struct hantek_drc_mem_channel {
 } hantek_drc_mem_channel;
 
 typedef struct hantek_drc_mem_params {
-    hantek_drc_mem_channel* channels;
+    hantek_drc_mem_channel channels[HANTEK_DRC_MAX_CHANNELS];
 } hantek_drc_mem_params;
 
 bool hantek_drc_mem_prepare(hantek_drc_info* info);
