@@ -37,7 +37,7 @@ bool hantek_drc_mem_frame(hantek_drc_channel* channel, const int16_t* buffer) {
         }
         payload->frames_allocated = frames_allocated;
     }
-    void* frame_data = hantek_drc_data_frame(&channel->info->data_handler, channel, buffer);
+    void* frame_data = hantek_drc_data_frame(channel, buffer);
     if (frame_data == NULL) {
         return false;
     }

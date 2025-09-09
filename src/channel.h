@@ -21,8 +21,8 @@ typedef struct hantek_drc_channel {
     hantek_drc_info* info;
 } hantek_drc_channel;
 
-uint64_t hantek_drc_channel_volts_milli(const hantek_drc_channel* channel);
-uint64_t hantek_drc_channel_max_volts_milli(const hantek_drc_channel* channel);
+int64_t hantek_drc_channel_volts_milli(const hantek_drc_channel* channel);
+int64_t hantek_drc_channel_max_volts_milli(const hantek_drc_channel* channel);
 
 #ifdef __cplusplus
 }

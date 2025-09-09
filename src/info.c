@@ -16,6 +16,9 @@ void hantek_drc_free(struct hantek_drc_info* info) {
     if (info->frame_handler.on_free != NULL) {
         info->frame_handler.on_free(info);
     }
+    if (info->data_handler.on_free != NULL) {
+        info->data_handler.on_free(info);
+    }
 }
 
 uint64_t hantek_drc_info_timediv_nanos(const hantek_drc_info* info) {

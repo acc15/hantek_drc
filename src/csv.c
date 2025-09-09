@@ -6,10 +6,24 @@ bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
     FILE* file = payload->csv_file;
     size_t buffer_length = channel->info->buffer_length;
     for (size_t i = 0; i < buffer_length; ++i) {
-        hantek_drc_data_value value = channel->info->data_handler.map(&channel->info->data_handler, channel, buffer[i]);
-        int result = fprintf(file, "%zu\t%zu\t%zu\t%f\n", 
-            channel->number + 1, channel->info->frame_count, i, value.f32);
-        if (result < 0) {
+        hantek_drc_data_value value = hantek_drc_data(channel, buffer[i]);
+        if (fprintf(file, "%zu\t%zu\t%zu\t", channel->number + 1, channel->info->frame_count, i) < 0) {
+            return false;
+        }
+        int pr = 0;
+        switch (channel->info->data_handler.type) {
+        case HANTEK_DRC_DATA_TYPE_F32: pr = fprintf(file, "%f\n", (double_t) value.f32); break;
+        case HANTEK_DRC_DATA_TYPE_F64: pr = fprintf(file, "%f\n", value.f64); break;
+        case HANTEK_DRC_DATA_TYPE_U8:  pr = fprintf(file, "%hhu\n", value.u8); break;
+        case HANTEK_DRC_DATA_TYPE_U16: pr = fprintf(file, "%hu\n", value.u16); break;
+        case HANTEK_DRC_DATA_TYPE_U32: pr = fprintf(file, "%u\n", value.u32); break;
+        case HANTEK_DRC_DATA_TYPE_U64: pr = fprintf(file, "%lu\n", value.u64); break;
+        case HANTEK_DRC_DATA_TYPE_I8:  pr = fprintf(file, "%hhd\n", value.i8); break;
+        case HANTEK_DRC_DATA_TYPE_I16: pr = fprintf(file, "%hd\n", value.i16); break;
+        case HANTEK_DRC_DATA_TYPE_I32: pr = fprintf(file, "%d\n", value.i32); break;
+        case HANTEK_DRC_DATA_TYPE_I64: pr = fprintf(file, "%ld\n", value.i64); break;
+        }
+        if (pr < 0) {
             return false;
         }
     }
