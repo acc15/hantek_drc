@@ -60,11 +60,9 @@ bool hantek_drc_mem_alloc(hantek_drc_info* info) {
 }
 
 bool hantek_drc_mem_ext(hantek_drc_info* info, hantek_drc_mem_params* params) {
-    info->frame_handler = (hantek_drc_frame_handler) {
-        .on_frame = &hantek_drc_mem_frame,
-        .on_free = &hantek_drc_mem_free,
-        .params = params,
-        .should_free = false
-    };
+    info->frame_handler.on_prepare = NULL;
+    info->frame_handler.on_frame = &hantek_drc_mem_frame;
+    info->frame_handler.on_free = &hantek_drc_mem_free;
+    info->frame_handler.params = params;
     return true;
 }

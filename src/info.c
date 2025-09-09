@@ -15,21 +15,6 @@ struct hantek_drc_info hantek_drc_init_6254bd(void) {
 void hantek_drc_free( hantek_drc_info* info) {
     hantek_drc_handler_free(info, (hantek_drc_handler*) &info->frame_handler);
     hantek_drc_handler_free(info, (hantek_drc_handler*) &info->data_handler);
-    /*
-    if (info->frame_handler.on_free != NULL) {
-        info->frame_handler.on_free(info);
-    }
-    if (info->frame_handler.params != NULL && info->frame_handler.should_free) {
-        free(info->frame_handler.params);
-        info->frame_handler.params = NULL;
-    }
-    if (info->data_handler.on_free != NULL) {
-        info->data_handler.on_free(info);
-    }
-    if (info->data_handler.params != NULL && info->data_handler.should_free) {
-        free(info->data_handler.params);
-        info->data_handler.params = NULL;
-    }*/
 }
 
 uint64_t hantek_drc_info_timediv_nanos(const hantek_drc_info* info) {

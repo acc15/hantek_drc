@@ -25,7 +25,6 @@ typedef struct hantek_drc_csv_params {
     const char* column_separator;
     const char* line_separator;
     bool should_close;
-    bool should_free;
 } hantek_drc_csv_params;
 
 bool hantek_drc_csv_ext(hantek_drc_info* info, hantek_drc_csv_params* params);
