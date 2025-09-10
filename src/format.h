@@ -42,11 +42,24 @@ typedef union hantek_drc_data_value {
 typedef struct hantek_drc_format_handler {
     struct hantek_drc_handler;
     hantek_drc_data_type type;
-    hantek_drc_data_value (*on_data)(hantek_drc_channel* channel, int16_t data);
+    hantek_drc_data_value (*on_data)(
+        const struct hantek_drc_format_handler* format, 
+        const hantek_drc_channel* channel, 
+        int16_t data
+    );
 } hantek_drc_format_handler;
 
-hantek_drc_data_value hantek_drc_data(hantek_drc_channel* channel, int16_t data);
-void* hantek_drc_frame(hantek_drc_channel* channel, const int16_t* frame);
+hantek_drc_data_value hantek_drc_format_data(
+    const hantek_drc_format_handler* format, 
+    const hantek_drc_channel* channel, 
+    int16_t data
+);
+
+void* hantek_drc_format_frame(
+    const hantek_drc_format_handler* format, 
+    const hantek_drc_channel* channel, 
+    const int16_t* frame
+);
 
 typedef struct hantek_drc_data_format_params {
     hantek_drc_data_type type;
@@ -77,7 +90,11 @@ hantek_drc_data_format_params hantek_drc_data_format_mul(
     int64_t multiplier
 );
 
-hantek_drc_data_value hantek_drc_data_format(hantek_drc_channel* channel, int16_t data);
+hantek_drc_data_value hantek_drc_data_format(
+    const hantek_drc_format_handler* format, 
+    const hantek_drc_channel* channel, 
+    int16_t data
+);
 
 #ifdef __cplusplus
 }

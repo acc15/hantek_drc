@@ -33,7 +33,7 @@ bool hantek_drc_mem_frame(hantek_drc_channel* channel, const int16_t* buffer) {
         mch->allocated = frames_allocated;
     }
     
-    void* frame_data = hantek_drc_frame(channel, buffer);
+    void* frame_data = hantek_drc_format_frame(&params->format, channel, buffer);
     if (frame_data == NULL) {
         return false;
     }
@@ -58,6 +58,7 @@ void hantek_drc_mem_free(hantek_drc_info* info) {
             }
         }
         free(params->channels[i].frames);
+        params->channels[i].frames = NULL;
     }
 }
 

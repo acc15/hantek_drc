@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #include "info.h"
+#include "format.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,6 +30,8 @@ typedef struct hantek_drc_csv_params {
     hantek_drc_csv_column columns;
     const char* column_separator;
     const char* line_separator;
+
+    hantek_drc_format_handler format;
 
 } hantek_drc_csv_params;
 

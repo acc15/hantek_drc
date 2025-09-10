@@ -10,11 +10,12 @@ struct test_frame_data {
 
 START_TEST(write_mem) 
 {
-    hantek_drc_mem_params mem = {0};
+    hantek_drc_mem_params mem = {
+        .format = hantek_drc_data_format_handler_alloc(hantek_drc_data_format_volts(HANTEK_DRC_DATA_TYPE_F32))
+    };
     hantek_drc_info info = {
         .caps = hantek_drc_6254bd(),
-        .frame_handler = hantek_drc_mem_handler(&mem),
-        .format_handler = hantek_drc_data_format_handler_alloc(hantek_drc_data_format_volts(HANTEK_DRC_DATA_TYPE_F32))
+        .frame_handler = hantek_drc_mem_handler(&mem)
     };
 
     ck_assert(hantek_drc_read_file("samples/data/ch_1_timediv_20ms_vdiv_500mv_triangle_full_scale.0.drc", &info));

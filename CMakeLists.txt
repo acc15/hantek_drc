@@ -27,7 +27,7 @@ set(SRC
     src/read.c
     src/value.c
     src/channel.c
-    src/data.c
+    src/format.c
     src/info.c
     src/csv.c
     src/mem.c
@@ -39,6 +39,7 @@ set(HEADERS
     src/coupling.h
     src/caps.h
     src/channel.h
+    src/format.h
     src/value.h
     src/info.h
     src/read.h

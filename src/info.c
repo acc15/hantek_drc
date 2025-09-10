@@ -3,10 +3,6 @@
 #include "info.h"
 #include "value.h"
 
-void hantek_drc_info_free(hantek_drc_info* info) {
-    hantek_drc_info_frame_handler(info, (hantek_drc_frame_handler){0});
-    hantek_drc_info_format_handler(info, (hantek_drc_format_handler){0});
-}
 
 uint64_t hantek_drc_info_timediv_nanos(const hantek_drc_info* info) {
     return hantek_drc_timediv_nanos(info->timediv);
@@ -22,7 +18,6 @@ void hantek_drc_info_frame_handler(hantek_drc_info* info, hantek_drc_frame_handl
     info->frame_handler = frame_handler;
 }
 
-void hantek_drc_info_format_handler(hantek_drc_info* info, hantek_drc_format_handler format_handler) {
-    hantek_drc_handler_free(info, (hantek_drc_handler*) &info->format_handler);
-    info->format_handler = format_handler;
+void hantek_drc_info_free(hantek_drc_info* info) {
+    hantek_drc_info_frame_handler(info, (hantek_drc_frame_handler){0});
 }
