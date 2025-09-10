@@ -39,14 +39,14 @@ typedef union hantek_drc_data_value {
     double_t    f64;
 } hantek_drc_data_value;
 
-typedef struct hantek_drc_data_handler {
+typedef struct hantek_drc_format_handler {
     struct hantek_drc_handler;
     hantek_drc_data_type type;
     hantek_drc_data_value (*on_data)(hantek_drc_channel* channel, int16_t data);
-} hantek_drc_data_handler;
+} hantek_drc_format_handler;
 
 hantek_drc_data_value hantek_drc_data(hantek_drc_channel* channel, int16_t data);
-void* hantek_drc_data_frame(hantek_drc_channel* channel, const int16_t* frame);
+void* hantek_drc_frame(hantek_drc_channel* channel, const int16_t* frame);
 
 typedef struct hantek_drc_data_format_params {
     hantek_drc_data_type type;
@@ -57,8 +57,8 @@ typedef struct hantek_drc_data_format_params {
     bool positive;
 } hantek_drc_data_format_params;
 
-hantek_drc_data_handler hantek_drc_data_format_handler(hantek_drc_data_format_params* params);
-void hantek_drc_data_format_free(hantek_drc_info* info);
+hantek_drc_format_handler hantek_drc_data_format_handler(hantek_drc_data_format_params* params);
+void hantek_drc_data_format_scale_free(hantek_drc_info* info);
 
 hantek_drc_data_format_params hantek_drc_data_format_raw(hantek_drc_data_type type);
 hantek_drc_data_format_params hantek_drc_data_format_volts_milli(hantek_drc_data_type type);

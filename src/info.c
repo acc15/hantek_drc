@@ -5,7 +5,7 @@
 
 void hantek_drc_free( hantek_drc_info* info) {
     hantek_drc_handler_free(info, (hantek_drc_handler*) &info->frame_handler);
-    hantek_drc_handler_free(info, (hantek_drc_handler*) &info->data_handler);
+    hantek_drc_handler_free(info, (hantek_drc_handler*) &info->format_handler);
 }
 
 uint64_t hantek_drc_info_timediv_nanos(const hantek_drc_info* info) {

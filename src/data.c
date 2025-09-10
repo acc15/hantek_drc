@@ -21,7 +21,7 @@ size_t hantek_drc_data_type_size(hantek_drc_data_type type) {
 }
 
 hantek_drc_data_value hantek_drc_data(hantek_drc_channel* channel, int16_t data) {
-    hantek_drc_data_handler* handler = &channel->info->data_handler;
+    hantek_drc_format_handler* handler = &channel->info->format_handler;
     if (handler->on_data != NULL) {
         return handler->on_data(channel, data);
     }
@@ -41,8 +41,8 @@ hantek_drc_data_value hantek_drc_data(hantek_drc_channel* channel, int16_t data)
     return value;
 }
 
-void* hantek_drc_data_frame(hantek_drc_channel* channel, const int16_t* frame) {
-    hantek_drc_data_handler* handler = &channel->info->data_handler;
+void* hantek_drc_frame(hantek_drc_channel* channel, const int16_t* frame) {
+    hantek_drc_format_handler* handler = &channel->info->format_handler;
     size_t data_size = hantek_drc_data_type_size(handler->type);
     void* data = malloc(data_size * channel->info->buffer_length);
     if (data == NULL) {
@@ -56,8 +56,8 @@ void* hantek_drc_data_frame(hantek_drc_channel* channel, const int16_t* frame) {
 }
 
 hantek_drc_data_value hantek_drc_data_format(hantek_drc_channel* channel, int16_t data) {
-    hantek_drc_data_handler* handler = &channel->info->data_handler;
-    hantek_drc_data_format_params* params = (hantek_drc_data_format_params*)channel->info->data_handler.params;
+    hantek_drc_format_handler* handler = &channel->info->format_handler;
+    hantek_drc_data_format_params* params = (hantek_drc_data_format_params*)channel->info->format_handler.params;
     
     int64_t multiplier = params->multiplier_fn != NULL ? params->multiplier_fn(channel) : params->multiplier;
     if (multiplier == 0) {
@@ -97,8 +97,8 @@ hantek_drc_data_value hantek_drc_data_format(hantek_drc_channel* channel, int16_
     return result;
 }
 
-hantek_drc_data_handler hantek_drc_data_format_handler(hantek_drc_data_format_params* params) {
-    return (hantek_drc_data_handler) {
+hantek_drc_format_handler hantek_drc_data_format_handler(hantek_drc_data_format_params* params) {
+    return (hantek_drc_format_handler) {
         .type = params->type,
         .on_data = &hantek_drc_data_format,
         .on_free = NULL,

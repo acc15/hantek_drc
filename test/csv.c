@@ -38,11 +38,10 @@ START_TEST(write_csv)
         .columns = hantek_drc_csv_columns(2, HANTEK_DRC_CSV_COLUMN_DATA, HANTEK_DRC_CSV_COLUMN_GLOBAL_INDEX),
     };
     hantek_drc_data_format_params format_params = hantek_drc_data_format_volts(HANTEK_DRC_DATA_TYPE_F32);
-
     hantek_drc_info info = {
         .caps = hantek_drc_6254bd(),
         .frame_handler = hantek_drc_csv_handler(&csv_params),
-        .data_handler = hantek_drc_data_format_handler(&format_params)
+        .format_handler = hantek_drc_data_format_handler(&format_params)
     };
     
     ck_assert(hantek_drc_read_file("samples/data/ch_1_timediv_20ms_vdiv_500mv_triangle_full_scale.0.drc", &info));

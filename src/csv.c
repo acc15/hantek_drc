@@ -47,7 +47,7 @@ bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
             default: 
                 {
                     hantek_drc_data_value value = hantek_drc_data(channel, buffer[i]);
-                    switch (channel->info->data_handler.type) {
+                    switch (channel->info->format_handler.type) {
                     case HANTEK_DRC_DATA_TYPE_F32: print_result = fprintf(file, "%f", (double_t) value.f32); break;
                     case HANTEK_DRC_DATA_TYPE_F64: print_result = fprintf(file, "%f", value.f64); break;
                     case HANTEK_DRC_DATA_TYPE_U8:  print_result = fprintf(file, "%hhu", value.u8); break;

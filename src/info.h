@@ -26,7 +26,7 @@ typedef struct hantek_drc_frame_handler {
 typedef struct hantek_drc_info {
     hantek_drc_caps caps;
     hantek_drc_frame_handler frame_handler;
-    hantek_drc_data_handler data_handler;
+    hantek_drc_format_handler format_handler;
     
     // parsed data
     hantek_drc_channel channel[HANTEK_DRC_MAX_CHANNELS];

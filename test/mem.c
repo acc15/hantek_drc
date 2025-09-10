@@ -15,7 +15,7 @@ START_TEST(write_mem)
     hantek_drc_info info = {
         .caps = hantek_drc_6254bd(),
         .frame_handler = hantek_drc_mem_handler(&mem),
-        .data_handler = hantek_drc_data_format_handler(&data_format)
+        .format_handler = hantek_drc_data_format_handler(&data_format)
     };
 
     ck_assert(hantek_drc_read_file("samples/data/ch_1_timediv_20ms_vdiv_500mv_triangle_full_scale.0.drc", &info));
