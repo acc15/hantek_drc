@@ -2,35 +2,6 @@
 #include "../src/read.h"
 #include "../src/csv.h"
 
-
-#define HANTEK_DRC_HANDLER_ALLOC( name, params_init ) \
-    (name ## _handler)( memcpy( calloc(1, sizeof((name ## _params)), ) )
-
-
-    /*
-    hantek_drc_csv_params csv_params = {
-        .path = "build/test.csv",
-        .columns = hantek_drc_csv_columns(2, HANTEK_DRC_CSV_COLUMN_DATA, HANTEK_DRC_CSV_COLUMN_GLOBAL_INDEX),
-    };
-    hantek_drc_data_format_params format_params = hantek_drc_data_format_volts(HANTEK_DRC_DATA_TYPE_F32);
-    hantek_drc_info info {
-        .caps = hantek_drc_6254bd(),
-        .frame_handler = hantek_drc_csv_handler(&csv_params),
-        .data_handler = hantek_drc_data_format_handler(&format_params);
-    };
-
-    HANTEK_DRC_HANDLER_ALLOC( hantek_drc_csv, {
-        .path = "build/test.csv",
-        .columns = hantek_drc_csv_columns(2, HANTEK_DRC_CSV_COLUMN_DATA, HANTEK_DRC_CSV_COLUMN_GLOBAL_INDEX),
-    } )
-
-    hantek_drc_info_frame_handler(&info, hantek_drc_csv_handler(&csv_params));
-    hantek_drc_info_data_handler(&info, hantek_drc_data_format_handler(&format_params));
-
-    hantek_drc_csv_handler_alloc((hantek_drc_csv_params) {
-        
-    });*/
-
 START_TEST(write_csv) 
 {
     hantek_drc_csv_params csv_params = {
