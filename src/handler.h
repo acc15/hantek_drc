@@ -16,7 +16,7 @@ typedef struct hantek_drc_handler {
     bool should_free;
 } hantek_drc_handler;
 
-void hantek_drc_handler_free(hantek_drc_info* info, hantek_drc_handler* handler);
+void hantek_drc_handler_free(hantek_drc_info* info, void* handler_any);
 
 
 #define HANTEK_DRC_HANDLER_ALLOC_DEF( name, type ) \

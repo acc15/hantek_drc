@@ -13,11 +13,6 @@ uint64_t hantek_drc_info_sampling_rate_milli(const hantek_drc_info* info) {
     return hantek_drc_sampling_rate_milli(info->caps.x_div, info->caps.max_sampling_rate, timediv_nanos);
 }
 
-void hantek_drc_info_frame_handler(hantek_drc_info* info, hantek_drc_frame_handler frame_handler) {
-    hantek_drc_handler_free(info, (hantek_drc_handler*) &info->frame_handler);
-    info->frame_handler = frame_handler;
-}
-
 void hantek_drc_info_free(hantek_drc_info* info) {
-    hantek_drc_info_frame_handler(info, (hantek_drc_frame_handler){0});
+    hantek_drc_handler_free(info, &info->frame_handler);
 }

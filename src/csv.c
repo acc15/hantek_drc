@@ -83,7 +83,7 @@ void hantek_drc_csv_free(hantek_drc_info* info) {
         fclose(params->file);
         params->file = NULL;
     }
-    hantek_drc_handler_free(info, (hantek_drc_handler*) &params->format);
+    hantek_drc_handler_free(info, &params->format);
 }
 
 hantek_drc_frame_handler hantek_drc_csv_handler(hantek_drc_csv_params* params) {

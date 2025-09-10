@@ -60,7 +60,7 @@ void hantek_drc_mem_free(hantek_drc_info* info) {
         free(params->channels[i].frames);
         params->channels[i].frames = NULL;
     }
-    hantek_drc_handler_free(info, (hantek_drc_handler*) &params->format);
+    hantek_drc_handler_free(info, &params->format);
 }
 
 
