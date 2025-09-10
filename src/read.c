@@ -66,14 +66,14 @@ bool hantek_drc_read_channels(FILE* file, hantek_drc_info* info) {
             return false;
         }
 
-        hantek_drc_channel* ch = &info->channel[info->channel_count];
-        ch->index = info->channel_count;
-        ch->number = i;
-        ch->coupling = file_channel_info.coupling;
-        ch->multiplier = file_channel_info.multiplier;
-        ch->lever = file_channel_info.lever_1;
-        ch->voltage = file_channel_info.voltage;
-        ch->info = info;
+        hantek_drc_channel* channel = &info->channel[info->channel_count];
+        channel->index = info->channel_count;
+        channel->number = i;
+        channel->coupling = file_channel_info.coupling;
+        channel->multiplier = file_channel_info.multiplier;
+        channel->lever = file_channel_info.lever_1;
+        channel->voltage = file_channel_info.voltage;
+        channel->info = info;
         ++info->channel_count;
     }
     return true;

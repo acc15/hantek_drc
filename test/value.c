@@ -29,15 +29,28 @@ END_TEST
 
 START_TEST(generic_sampling_rate) 
 {
-    size_t x_div = 10;
-    uint64_t max_rate = 1000000000000ULL;
-    ck_assert_uint_eq(hantek_drc_sampling_rate_milli(x_div, max_rate, hantek_drc_timediv_nanos(35)), 250ULL);
-    ck_assert_uint_eq(hantek_drc_sampling_rate_milli(x_div, max_rate, hantek_drc_timediv_nanos(34)), 500ULL);
-    ck_assert_uint_eq(hantek_drc_sampling_rate_milli(x_div, max_rate, hantek_drc_timediv_nanos(33)), 1250ULL);
-    ck_assert_uint_eq(hantek_drc_sampling_rate_milli(x_div, max_rate, hantek_drc_timediv_nanos(32)), 2500ULL);
-    ck_assert_uint_eq(hantek_drc_sampling_rate_milli(x_div, max_rate, hantek_drc_timediv_nanos(7)), 500000000000ULL);
-    for (uint16_t i = 0; i < 7; ++i) {
-        ck_assert_uint_eq(hantek_drc_sampling_rate_milli(x_div, max_rate, hantek_drc_timediv_nanos(i)), 1000000000000ULL);
+    const size_t x_div = 10;
+    const uint64_t max_rate = 1000000000000ULL;
+
+    const uint64_t sampling_rates[] = {
+        1000000000000ULL,
+        1000000000000ULL,
+        1000000000000ULL,
+        1000000000000ULL,
+        1000000000000ULL,
+        1000000000000ULL,
+        1000000000000ULL,
+        500000000000ULL,
+        250000000000ULL,
+        125000000000ULL,
+        50000000000ULL,
+        25000000000ULL,
+        12500000000ULL,
+    };
+    for (size_t i = 0; i < sizeof(sampling_rates) / sizeof(sampling_rates[0]); ++i) {
+        const uint64_t expected = sampling_rates[i];
+        const uint64_t actual = hantek_drc_sampling_rate_milli(x_div, max_rate, hantek_drc_timediv_nanos(i));
+        ck_assert_uint_eq(expected, actual);
     }
 }
 END_TEST

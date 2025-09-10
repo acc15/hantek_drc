@@ -6,12 +6,14 @@
 bool hantek_drc_mem_frame(hantek_drc_channel* channel, const int16_t* buffer) {
     hantek_drc_info* info = channel->info;
     hantek_drc_mem_params* params = (hantek_drc_mem_params*) info->frame_handler.params;
-    hantek_drc_mem_channel* mch = (hantek_drc_mem_channel*) &params->channels[channel->index];
+    hantek_drc_mem_channel* mch = &params->channels[channel->index];
     
+    static const size_t INITIAL_FRAME_COUNT = 16;
+
     if (mch->allocated <= mch->recorded) {
         size_t frames_allocated = mch->allocated * 2;
         if (frames_allocated == 0) {
-            frames_allocated = 16;
+            frames_allocated = INITIAL_FRAME_COUNT;
         }
         mch->frames = realloc(mch->frames, sizeof(void**)*frames_allocated);
         if (mch->frames == NULL) {

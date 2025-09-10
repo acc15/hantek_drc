@@ -3,6 +3,7 @@
 #include "info.h"
 #include "value.h"
 
+// NOLINTBEGIN(readability-magic-numbers)
 struct hantek_drc_info hantek_drc_init_6254bd(void) {
     return (hantek_drc_info) {
         .max_channels = 4,
@@ -11,6 +12,7 @@ struct hantek_drc_info hantek_drc_init_6254bd(void) {
         .y_div = 8
     };
 }
+// NOLINTEND(readability-magic-numbers)
 
 void hantek_drc_free( hantek_drc_info* info) {
     hantek_drc_handler_free(info, (hantek_drc_handler*) &info->frame_handler);

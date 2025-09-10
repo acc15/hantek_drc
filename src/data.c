@@ -34,7 +34,7 @@ hantek_drc_data_value hantek_drc_data(hantek_drc_channel* channel, int16_t data)
     case HANTEK_DRC_DATA_TYPE_U32: value.u32 = (uint32_t) data; break;
     case HANTEK_DRC_DATA_TYPE_U64: value.u64 = (uint64_t) data; break;
     case HANTEK_DRC_DATA_TYPE_I8:  value.i8  = (int8_t)   data; break;
-    case HANTEK_DRC_DATA_TYPE_I16: value.i16 = (int16_t)  data; break;
+    case HANTEK_DRC_DATA_TYPE_I16: value.i16 =            data; break;
     case HANTEK_DRC_DATA_TYPE_I32: value.i32 = (int32_t)  data; break;
     case HANTEK_DRC_DATA_TYPE_I64: value.i64 = (int64_t)  data; break;
     }
@@ -43,14 +43,14 @@ hantek_drc_data_value hantek_drc_data(hantek_drc_channel* channel, int16_t data)
 
 void* hantek_drc_data_frame(hantek_drc_channel* channel, const int16_t* frame) {
     hantek_drc_data_handler* handler = &channel->info->data_handler;
-    size_t sz = hantek_drc_data_type_size(handler->type);
-    void* data = malloc(sz * channel->info->buffer_length);
+    size_t data_size = hantek_drc_data_type_size(handler->type);
+    void* data = malloc(data_size * channel->info->buffer_length);
     if (data == NULL) {
         return NULL;
     }
     for (size_t i=0; i < channel->info->buffer_length; ++i) {
-        hantek_drc_data_value v = hantek_drc_data(channel, frame[i]);
-        memcpy((unsigned char*)data + (sz * i), &v, sz);
+        hantek_drc_data_value data_value = hantek_drc_data(channel, frame[i]);
+        memcpy((unsigned char*)data + (data_size * i), &data_value, data_size);
     }
     return data;
 }
@@ -73,11 +73,11 @@ hantek_drc_data_value hantek_drc_data_format(hantek_drc_channel* channel, int16_
     
     hantek_drc_data_value result;
     if (handler->type == HANTEK_DRC_DATA_TYPE_F32) {
-        float_t v = ((float_t) value) / divider;
-        result.f32 = params->positive && v < 0.0 ? 0.f : v;
+        float_t float_value = ((float_t) value) / divider;
+        result.f32 = params->positive && float_value < 0.0 ? 0.F : float_value;
     } else if (handler->type == HANTEK_DRC_DATA_TYPE_F64) {
-        double_t v = ((double_t) value) / divider;
-        result.f64 = params->positive && v < 0.0 ? 0.0 : v;
+        double_t double_value = ((double_t) value) / divider;
+        result.f64 = params->positive && double_value < 0.0 ? 0.0 : double_value;
     } else {
         value /= divider;
         if (params->positive && value < 0) {
@@ -113,10 +113,12 @@ bool hantek_drc_data_format_alloc(hantek_drc_info* info, hantek_drc_data_format_
 }
 
 bool hantek_drc_data_format_ext(hantek_drc_info* info, hantek_drc_data_format_params* params) {
+    hantek_drc_handler_free(info, (hantek_drc_handler*) &info->data_handler);
     info->data_handler.type = params->type;
     info->data_handler.on_data = &hantek_drc_data_format;
     info->data_handler.on_free = NULL;
     info->data_handler.params = params;
+    info->data_handler.should_free = false;
     return true;
 }
 
@@ -133,10 +135,11 @@ hantek_drc_data_format_params hantek_drc_data_format_volts_milli(hantek_drc_data
 }
 
 hantek_drc_data_format_params hantek_drc_data_format_volts(hantek_drc_data_type type) {
+    static const uint64_t VOLTS_DIVIDER = 1000ULL;
     return (hantek_drc_data_format_params) {
         .type = type,
         .multiplier_fn = &hantek_drc_channel_max_volts_milli,
-        .divider = INT16_MAX * 1000ULL
+        .divider = INT16_MAX * VOLTS_DIVIDER
     };
 }
 

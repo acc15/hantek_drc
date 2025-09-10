@@ -18,6 +18,8 @@ typedef enum hantek_drc_csv_column {
     HANTEK_DRC_CSV_COLUMN_GLOBAL_INDEX
 } hantek_drc_csv_column;
 
+extern const size_t HANTEK_DRC_CSV_COLUMN_BITS;
+
 typedef struct hantek_drc_csv_params {
     const char* path;
     FILE* file;
@@ -30,6 +32,7 @@ typedef struct hantek_drc_csv_params {
 bool hantek_drc_csv_ext(hantek_drc_info* info, hantek_drc_csv_params* params);
 bool hantek_drc_csv_alloc(hantek_drc_info* info, hantek_drc_csv_params params_copy);
 hantek_drc_csv_column hantek_drc_csv_columns(size_t count, ...);
+hantek_drc_csv_column hantek_drc_csv_column_at(hantek_drc_csv_column cols, size_t index);
 
 bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer);
 void hantek_drc_csv_free(hantek_drc_info* info);

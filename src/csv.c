@@ -2,66 +2,69 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+const size_t HANTEK_DRC_CSV_COLUMN_BITS = 3;
+
 bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
     hantek_drc_csv_params* params = (hantek_drc_csv_params*) channel->info->frame_handler.params;
     FILE* file = params->file;
     size_t buffer_length = channel->info->buffer_length;
-    hantek_drc_csv_column cols = params->columns;
     for (size_t i = 0; i < buffer_length; ++i) {
         
-        size_t col_num = 0;
-        hantek_drc_csv_column remaining_cols = cols;
-        while (remaining_cols != 0) {
-            hantek_drc_csv_column col = remaining_cols & 0x07;
+        for (size_t col_num = 0;; ++col_num) {
+            hantek_drc_csv_column col = hantek_drc_csv_column_at(params->columns, col_num);
+            if (col == HANTEK_DRC_CSV_COLUMN_DEFAULT) {
+                break;
+            }
 
-            int pr = 0;
+            int print_result = 0;
             if (col_num > 0 && fputs(params->column_separator, file) == EOF) {
                 return false;
             }
 
             switch (col) {
             case HANTEK_DRC_CSV_COLUMN_CHANNEL:
-                pr = fprintf(file, "%zu", channel->number + 1);
+                print_result = fprintf(file, "%zu", channel->number + 1);
                 break;
 
             case HANTEK_DRC_CSV_COLUMN_FRAME:
-                pr = fprintf(file, "%zu", channel->info->frame_count);
+                print_result = fprintf(file, "%zu", channel->info->frame_count);
                 break;
 
             case HANTEK_DRC_CSV_COLUMN_INDEX:
-                pr = fprintf(file, "%zu", i);
+                print_result = fprintf(file, "%zu", i);
                 break;
 
             case HANTEK_DRC_CSV_COLUMN_GLOBAL_INDEX:
-                pr = fprintf(file, "%zu", 
-                    (channel->info->channel_count * channel->info->frame_count + channel->index)*buffer_length + i);
-                break;
-            
+                {
+                    size_t global_index = (
+                        ((channel->info->channel_count * channel->info->frame_count) + channel->index)
+                        * buffer_length
+                    ) + i;
+                    print_result = fprintf(file, "%zu", global_index);
+                    break;
+                }
+
             default: 
                 {
                     hantek_drc_data_value value = hantek_drc_data(channel, buffer[i]);
                     switch (channel->info->data_handler.type) {
-                    case HANTEK_DRC_DATA_TYPE_F32: pr = fprintf(file, "%f", (double_t) value.f32); break;
-                    case HANTEK_DRC_DATA_TYPE_F64: pr = fprintf(file, "%f", value.f64); break;
-                    case HANTEK_DRC_DATA_TYPE_U8:  pr = fprintf(file, "%hhu", value.u8); break;
-                    case HANTEK_DRC_DATA_TYPE_U16: pr = fprintf(file, "%hu", value.u16); break;
-                    case HANTEK_DRC_DATA_TYPE_U32: pr = fprintf(file, "%u", value.u32); break;
-                    case HANTEK_DRC_DATA_TYPE_U64: pr = fprintf(file, "%lu", value.u64); break;
-                    case HANTEK_DRC_DATA_TYPE_I8:  pr = fprintf(file, "%hhd", value.i8); break;
-                    case HANTEK_DRC_DATA_TYPE_I16: pr = fprintf(file, "%hd", value.i16); break;
-                    case HANTEK_DRC_DATA_TYPE_I32: pr = fprintf(file, "%d", value.i32); break;
-                    case HANTEK_DRC_DATA_TYPE_I64: pr = fprintf(file, "%ld", value.i64); break;
+                    case HANTEK_DRC_DATA_TYPE_F32: print_result = fprintf(file, "%f", (double_t) value.f32); break;
+                    case HANTEK_DRC_DATA_TYPE_F64: print_result = fprintf(file, "%f", value.f64); break;
+                    case HANTEK_DRC_DATA_TYPE_U8:  print_result = fprintf(file, "%hhu", value.u8); break;
+                    case HANTEK_DRC_DATA_TYPE_U16: print_result = fprintf(file, "%hu", value.u16); break;
+                    case HANTEK_DRC_DATA_TYPE_U32: print_result = fprintf(file, "%u", value.u32); break;
+                    case HANTEK_DRC_DATA_TYPE_U64: print_result = fprintf(file, "%llu", value.u64); break;
+                    case HANTEK_DRC_DATA_TYPE_I8:  print_result = fprintf(file, "%hhd", value.i8); break;
+                    case HANTEK_DRC_DATA_TYPE_I16: print_result = fprintf(file, "%hd", value.i16); break;
+                    case HANTEK_DRC_DATA_TYPE_I32: print_result = fprintf(file, "%d", value.i32); break;
+                    case HANTEK_DRC_DATA_TYPE_I64: print_result = fprintf(file, "%lld", value.i64); break;
                     }
                     break;
                 }
             }
-
-            if (pr < 0) {
+            if (print_result < 0) {
                 return false;
             }
-
-            remaining_cols >>= 3;
-            ++col_num;
         }
         if (fputs(params->line_separator, file) == EOF) {
             return false;
@@ -72,12 +75,10 @@ bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
 }
 
 void hantek_drc_csv_free(hantek_drc_info* info) {
-    hantek_drc_frame_handler* fh = &info->frame_handler;
-    if (fh->params != NULL) {
-        hantek_drc_csv_params* params = (hantek_drc_csv_params*) fh->params;
-        if (params->file != NULL && params->should_close) {
-            fclose(params->file);
-        }
+    hantek_drc_csv_params* params = (hantek_drc_csv_params*) info->frame_handler.params;
+    if (params != NULL && params->file != NULL && params->should_close) {
+        fclose(params->file);
+        params->file = NULL;
     }
 }
 
@@ -134,13 +135,17 @@ bool hantek_drc_csv_alloc(hantek_drc_info* info, hantek_drc_csv_params params_ex
     return true;
 }
 
+hantek_drc_csv_column hantek_drc_csv_column_at(hantek_drc_csv_column cols, size_t index) {
+    return (cols >> (HANTEK_DRC_CSV_COLUMN_BITS * index)) & ((1 << HANTEK_DRC_CSV_COLUMN_BITS) - 1);
+}
+
 hantek_drc_csv_column hantek_drc_csv_columns(size_t count, ...) {
     va_list args;
     va_start(args, count);
     hantek_drc_csv_column result = 0;
     for (size_t i = 0; i < count; ++i) {
         hantek_drc_csv_column col = va_arg(args, hantek_drc_csv_column);
-        result |= (col << 3 * i);
+        result |= (col << (HANTEK_DRC_CSV_COLUMN_BITS * i));
     }
     va_end(args);
     return result;

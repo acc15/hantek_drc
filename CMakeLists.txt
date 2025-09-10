@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 4.1)
 project(hantek_drc VERSION 1.0.0 LANGUAGES C)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED TRUE) # Make it mandatory
-# set(CMAKE_C_CPPCHECK "cppcheck;--check-level=exhaustive")
+set(CMAKE_C_CPPCHECK "cppcheck;--check-level=exhaustive")
+set(CMAKE_C_CLANG_TIDY clang-tidy -checks=-*,readability-*)
 
 if(MSVC)
      add_definitions(-D_CRT_SECURE_NO_WARNINGS) # Disables CRT secure warning to allow cross-platform stdlib usage

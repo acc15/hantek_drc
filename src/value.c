@@ -32,7 +32,9 @@ uint64_t hantek_drc_value(unsigned int index) {
     // 10 == 1010b after >> 1 == 
     // 5 == 101b after >> 1 ==
     // 2 == 10b
-    return (10 >> (2 - (index % 3))) * hantek_drc_fast_pow_10(index / 3);
+    static const uint64_t count = 3;
+    static const uint64_t value_per_count = 10;
+    return (value_per_count >> ((count - 1) - (index % count))) * hantek_drc_fast_pow_10(index / count);
 }
 
 uint64_t hantek_drc_voltage_volts_milli(uint16_t voltage, uint16_t multiplier) {
@@ -44,7 +46,8 @@ uint64_t hantek_drc_timediv_nanos(uint16_t timediv) {
 }
 
 uint64_t hantek_drc_sampling_rate_milli(size_t x_div, uint64_t max_rate, uint64_t timediv_ns) {
-    uint64_t computed_rate = 2500000000000000ULL / (x_div * timediv_ns);
+    static const uint64_t rate_per_screen = 2500000000000000ULL;
+    uint64_t computed_rate = rate_per_screen / (x_div * timediv_ns);
     return computed_rate > max_rate ? max_rate : computed_rate;
 }
 
