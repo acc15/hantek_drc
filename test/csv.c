@@ -49,7 +49,7 @@ START_TEST(write_csv)
     ck_assert_uint_eq(info.frame_count, 25);
     ck_assert_uint_eq(hantek_drc_channel_volts_milli(&info.channel[0]), 500ULL);
     ck_assert_uint_eq(hantek_drc_info_sampling_rate_milli(&info), 12500000ULL);
-    hantek_drc_free(&info);
+    hantek_drc_info_free(&info);
 }
 END_TEST
 

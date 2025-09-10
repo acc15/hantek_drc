@@ -11,11 +11,10 @@ struct test_frame_data {
 START_TEST(write_mem) 
 {
     hantek_drc_mem_params mem = {0};
-    hantek_drc_data_format_params data_format = hantek_drc_data_format_volts(HANTEK_DRC_DATA_TYPE_F32);
     hantek_drc_info info = {
         .caps = hantek_drc_6254bd(),
         .frame_handler = hantek_drc_mem_handler(&mem),
-        .format_handler = hantek_drc_data_format_handler(&data_format)
+        .format_handler = hantek_drc_data_format_handler_alloc(hantek_drc_data_format_volts(HANTEK_DRC_DATA_TYPE_F32))
     };
 
     ck_assert(hantek_drc_read_file("samples/data/ch_1_timediv_20ms_vdiv_500mv_triangle_full_scale.0.drc", &info));
@@ -42,7 +41,7 @@ START_TEST(write_mem)
             ck_assert_float_eq_tol(frame[test_frame->offset + j], test_frame->data[j], tol);
         }
     }
-    hantek_drc_free(&info);
+    hantek_drc_info_free(&info);
 }
 END_TEST
 

@@ -106,6 +106,8 @@ hantek_drc_format_handler hantek_drc_data_format_handler(hantek_drc_data_format_
     };
 }
 
+HANTEK_DRC_HANDLER_ALLOC_IMPL( data_format, format )
+
 hantek_drc_data_format_params hantek_drc_data_format_raw(hantek_drc_data_type type) {
     return hantek_drc_data_format_muldiv(type, 1, 1, false);
 }

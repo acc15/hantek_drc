@@ -3,6 +3,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+hantek_drc_frame_handler hantek_drc_mem_handler(hantek_drc_mem_params* params) {
+    return (hantek_drc_frame_handler) {
+        .on_prepare = NULL,
+        .on_frame = &hantek_drc_mem_frame,
+        .on_free = &hantek_drc_mem_free,
+        .params = params
+    };
+}
+HANTEK_DRC_HANDLER_ALLOC_IMPL( mem, frame )
+
 bool hantek_drc_mem_frame(hantek_drc_channel* channel, const int16_t* buffer) {
     hantek_drc_info* info = channel->info;
     hantek_drc_mem_params* params = (hantek_drc_mem_params*) info->frame_handler.params;
@@ -15,7 +25,7 @@ bool hantek_drc_mem_frame(hantek_drc_channel* channel, const int16_t* buffer) {
         if (frames_allocated == 0) {
             frames_allocated = INITIAL_FRAME_COUNT;
         }
-        mch->frames = realloc(mch->frames, sizeof(void**)*frames_allocated);
+        mch->frames = realloc(mch->frames, sizeof(void**) * frames_allocated);
         if (mch->frames == NULL) {
             return false;
         }
@@ -51,12 +61,4 @@ void hantek_drc_mem_free(hantek_drc_info* info) {
     }
 }
 
-hantek_drc_frame_handler hantek_drc_mem_handler(hantek_drc_mem_params* params) {
-    return (hantek_drc_frame_handler) {
-        .on_prepare = NULL,
-        .on_frame = &hantek_drc_mem_frame,
-        .on_free = &hantek_drc_mem_free,
-        .params = params
-    };
-}
 

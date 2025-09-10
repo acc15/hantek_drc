@@ -121,6 +121,8 @@ hantek_drc_frame_handler hantek_drc_csv_handler(hantek_drc_csv_params* params) {
     };
 }
 
+HANTEK_DRC_HANDLER_ALLOC_IMPL(csv, frame)
+
 hantek_drc_csv_column hantek_drc_csv_column_at(hantek_drc_csv_column cols, size_t index) {
     return (cols >> (HANTEK_DRC_CSV_COLUMN_BITS * index)) & ((1 << HANTEK_DRC_CSV_COLUMN_BITS) - 1);
 }
