@@ -18,8 +18,8 @@ typedef struct hantek_drc_mem_params {
 
 bool hantek_drc_mem_prepare(hantek_drc_info* info);
 bool hantek_drc_mem_frame(hantek_drc_channel* channel, const int16_t* buffer);
-bool hantek_drc_mem_alloc(hantek_drc_info* info);
-bool hantek_drc_mem_ext(hantek_drc_info* info, hantek_drc_mem_params* params);
+
+hantek_drc_frame_handler hantek_drc_mem_handler(hantek_drc_mem_params* params);
 void hantek_drc_mem_free(hantek_drc_info* info);
 
 #ifdef __cplusplus

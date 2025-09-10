@@ -29,8 +29,7 @@ typedef struct hantek_drc_csv_params {
     bool should_close;
 } hantek_drc_csv_params;
 
-bool hantek_drc_csv_ext(hantek_drc_info* info, hantek_drc_csv_params* params);
-bool hantek_drc_csv_alloc(hantek_drc_info* info, hantek_drc_csv_params params_copy);
+hantek_drc_frame_handler hantek_drc_csv_handler(hantek_drc_csv_params* params);
 hantek_drc_csv_column hantek_drc_csv_columns(size_t count, ...);
 hantek_drc_csv_column hantek_drc_csv_column_at(hantek_drc_csv_column cols, size_t index);
 

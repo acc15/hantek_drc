@@ -16,11 +16,11 @@ bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
                 break;
             }
 
-            int print_result = 0;
             if (col_num > 0 && fputs(params->column_separator, file) == EOF) {
                 return false;
             }
 
+            int print_result = 0;
             switch (col) {
             case HANTEK_DRC_CSV_COLUMN_CHANNEL:
                 print_result = fprintf(file, "%zu", channel->number + 1);
@@ -82,18 +82,18 @@ void hantek_drc_csv_free(hantek_drc_info* info) {
     }
 }
 
-bool hantek_drc_csv_ext(hantek_drc_info* info, hantek_drc_csv_params* params) {
+hantek_drc_frame_handler hantek_drc_csv_handler(hantek_drc_csv_params* params) {
     if (params->file == NULL) {
         if (params->path != NULL) {
             params->file = fopen(params->path, "wt");
             params->should_close = true;
         } else {
-            return false;
+            return (hantek_drc_frame_handler) {0};
         }
     }
 
     if (params->file == NULL) {
-        return false;
+        return (hantek_drc_frame_handler) {0};
     }
 
     if (params->columns == HANTEK_DRC_CSV_COLUMN_DEFAULT) {
@@ -113,26 +113,12 @@ bool hantek_drc_csv_ext(hantek_drc_info* info, hantek_drc_csv_params* params) {
         params->line_separator = "\n";
     }
 
-    info->frame_handler.on_prepare = NULL;
-    info->frame_handler.on_frame = &hantek_drc_csv_frame;
-    info->frame_handler.on_free = &hantek_drc_csv_free;
-    info->frame_handler.params = params;
-    return true;
-}
-
-bool hantek_drc_csv_alloc(hantek_drc_info* info, hantek_drc_csv_params params_example) {
-    hantek_drc_csv_params* params = (hantek_drc_csv_params*) calloc(1, sizeof(hantek_drc_csv_params));
-    if (params == NULL) {
-        return false;
-    }
-
-    *params = params_example;
-    if (!hantek_drc_csv_ext(info, params)) {
-        free(params);
-        return false;
-    }
-    info->frame_handler.should_free = true;
-    return true;
+    return (hantek_drc_frame_handler) {
+        .on_prepare = NULL,
+        .on_frame = &hantek_drc_csv_frame,
+        .on_free = &hantek_drc_csv_free,
+        .params = params
+    };
 }
 
 hantek_drc_csv_column hantek_drc_csv_column_at(hantek_drc_csv_column cols, size_t index) {

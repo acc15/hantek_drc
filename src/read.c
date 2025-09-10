@@ -53,7 +53,7 @@ bool hantek_drc_read_signature(FILE* file) {
 
 bool hantek_drc_read_channels(FILE* file, hantek_drc_info* info) {
     info->channel_count = 0;
-    for (size_t i = 0; i < info->max_channels; ++i) {
+    for (size_t i = 0; i < info->caps.max_channels; ++i) {
         uint32_t enabled = 0;
         if (fread(&enabled, sizeof(enabled), 1, file) != 1) {
             return false;

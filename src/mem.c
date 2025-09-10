@@ -51,20 +51,12 @@ void hantek_drc_mem_free(hantek_drc_info* info) {
     }
 }
 
-bool hantek_drc_mem_alloc(hantek_drc_info* info) {
-    hantek_drc_mem_params* params = calloc(1, sizeof(hantek_drc_mem_params));
-    if (params == NULL) {
-        return false;
-    }
-    hantek_drc_mem_ext(info, params);
-    info->frame_handler.should_free = true;
-    return true;
+hantek_drc_frame_handler hantek_drc_mem_handler(hantek_drc_mem_params* params) {
+    return (hantek_drc_frame_handler) {
+        .on_prepare = NULL,
+        .on_frame = &hantek_drc_mem_frame,
+        .on_free = &hantek_drc_mem_free,
+        .params = params
+    };
 }
 
-bool hantek_drc_mem_ext(hantek_drc_info* info, hantek_drc_mem_params* params) {
-    info->frame_handler.on_prepare = NULL;
-    info->frame_handler.on_frame = &hantek_drc_mem_frame;
-    info->frame_handler.on_free = &hantek_drc_mem_free;
-    info->frame_handler.params = params;
-    return true;
-}

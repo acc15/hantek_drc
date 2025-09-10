@@ -3,7 +3,6 @@ project(hantek_drc VERSION 1.0.0 LANGUAGES C)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED TRUE) # Make it mandatory
 set(CMAKE_C_CPPCHECK "cppcheck;--check-level=exhaustive")
-set(CMAKE_C_CLANG_TIDY clang-tidy -checks=-*,readability-*)
 
 if(MSVC)
      add_definitions(-D_CRT_SECURE_NO_WARNINGS) # Disables CRT secure warning to allow cross-platform stdlib usage
@@ -24,6 +23,7 @@ endif()
 set(CMAKE_DEBUG_POSTFIX "d")
 
 set(SRC 
+    src/caps.c
     src/read.c
     src/value.c
     src/channel.c
@@ -37,6 +37,7 @@ set(SRC
 set(HEADERS 
     src/fwd.h
     src/coupling.h
+    src/caps.h
     src/channel.h
     src/value.h
     src/info.h

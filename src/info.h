@@ -7,6 +7,7 @@
 #include "channel.h"
 #include "data.h"
 #include "handler.h"
+#include "caps.h"
 
 #ifndef HANTEK_DRC_MAX_CHANNELS
 #   define HANTEK_DRC_MAX_CHANNELS 8
@@ -23,12 +24,7 @@ typedef struct hantek_drc_frame_handler {
 } hantek_drc_frame_handler;
 
 typedef struct hantek_drc_info {
-    
-    size_t max_channels;
-    uint64_t max_sampling_rate;
-    size_t x_div;
-    size_t y_div;
-
+    hantek_drc_caps caps;
     hantek_drc_frame_handler frame_handler;
     hantek_drc_data_handler data_handler;
     
@@ -41,7 +37,6 @@ typedef struct hantek_drc_info {
 
 } hantek_drc_info;
 
-hantek_drc_info hantek_drc_init_6254bd(void);
 void hantek_drc_free(struct hantek_drc_info* info);
 
 uint64_t hantek_drc_info_timediv_nanos(const hantek_drc_info* info);
