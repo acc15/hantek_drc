@@ -42,6 +42,10 @@ void hantek_drc_free(struct hantek_drc_info* info);
 uint64_t hantek_drc_info_timediv_nanos(const hantek_drc_info* info);
 uint64_t hantek_drc_info_sampling_rate_milli(const hantek_drc_info* info);
 
+void hantek_drc_info_frame_handler(hantek_drc_info* info, hantek_drc_frame_handler frame_handler);
+void hantek_drc_info_format_handler(hantek_drc_info* info, hantek_drc_format_handler format_handler);
+
+
 #ifdef __cplusplus
 }
 #endif
