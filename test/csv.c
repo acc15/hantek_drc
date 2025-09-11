@@ -1,6 +1,6 @@
 #include "csv.h"
-#include "../src/read.h"
 #include "../src/csv.h"
+#include "../src/read.h"
 
 START_TEST(write_csv) 
 {
@@ -27,8 +27,8 @@ END_TEST
 START_TEST(csv_columns) 
 {
     hantek_drc_csv_column cols = hantek_drc_csv_columns(3, HANTEK_DRC_CSV_COLUMN_CHANNEL, HANTEK_DRC_CSV_COLUMN_DATA);
-    ck_assert_uint_eq( (cols & 7) , HANTEK_DRC_CSV_COLUMN_CHANNEL );
-    ck_assert_uint_eq( (cols >> 3) & 7, HANTEK_DRC_CSV_COLUMN_DATA );
+    ck_assert_uint_eq(hantek_drc_csv_column_at(cols, 0), HANTEK_DRC_CSV_COLUMN_CHANNEL);
+    ck_assert_uint_eq(hantek_drc_csv_column_at(cols, 1), HANTEK_DRC_CSV_COLUMN_DATA);
 }
 END_TEST
 

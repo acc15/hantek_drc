@@ -81,10 +81,10 @@ hantek_drc_data_value hantek_drc_data_format(
     
     hantek_drc_data_value result;
     if (format->type == HANTEK_DRC_DATA_TYPE_F32) {
-        float_t float_value = ((float_t) value) / divider;
+        float_t float_value = (float_t) value / (float_t) divider;
         result.f32 = params->positive && float_value < 0.0 ? 0.F : float_value;
     } else if (format->type == HANTEK_DRC_DATA_TYPE_F64) {
-        double_t double_value = ((double_t) value) / divider;
+        double_t double_value = (float_t) value / (float_t) divider;
         result.f64 = params->positive && double_value < 0.0 ? 0.0 : double_value;
     } else {
         value /= divider;

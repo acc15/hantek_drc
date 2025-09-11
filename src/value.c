@@ -52,5 +52,5 @@ uint64_t hantek_drc_sampling_rate_milli(size_t x_div, uint64_t max_rate, uint64_
 }
 
 uint64_t hantek_drc_max_volts_milli(size_t y_div, uint16_t voltage, uint16_t multiplier) {
-    return hantek_drc_voltage_volts_milli(voltage, multiplier) * (y_div >> 1);
+    return hantek_drc_voltage_volts_milli(voltage, multiplier) * (y_div / 2);
 }

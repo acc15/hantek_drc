@@ -25,11 +25,13 @@ bool hantek_drc_mem_frame(hantek_drc_channel* channel, const int16_t* buffer) {
         if (frames_allocated == 0) {
             frames_allocated = INITIAL_FRAME_COUNT;
         }
-        mch->frames = realloc(mch->frames, sizeof(void**) * frames_allocated);
-        if (mch->frames == NULL) {
+        void** new_frames = (void**) realloc((void*) mch->frames, sizeof(void**) * frames_allocated);
+        if (new_frames == NULL) {
             return false;
         }
-        memset(mch->frames + mch->allocated, 0, sizeof(void**) * (frames_allocated - mch->allocated));
+
+        memset((void*) (new_frames + mch->allocated), 0, sizeof(void**) * (frames_allocated - mch->allocated));
+        mch->frames = new_frames;
         mch->allocated = frames_allocated;
     }
     
@@ -57,7 +59,7 @@ void hantek_drc_mem_free(hantek_drc_info* info) {
                 free(params->channels[i].frames[j]);
             }
         }
-        free(params->channels[i].frames);
+        free((void*) params->channels[i].frames);
         params->channels[i].frames = NULL;
     }
     hantek_drc_handler_free(info, &params->format);

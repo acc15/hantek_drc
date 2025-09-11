@@ -148,6 +148,6 @@ bool hantek_drc_read_file(const char* path, hantek_drc_info* info) {
         return false;
     }
     bool result = hantek_drc_read(file, info);
-    fclose(file);
+    result &= (bool)(fclose(file) != EOF);
     return result;
 }
