@@ -4,8 +4,8 @@
 
 const size_t HANTEK_DRC_CSV_COLUMN_BITS = 3;
 
-bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
-    hantek_drc_csv_params* params = (hantek_drc_csv_params*) channel->info->frame_handler.params;
+bool hantek_drc_csv_frame(void* params_any, hantek_drc_channel* channel, const int16_t* buffer) {
+    hantek_drc_csv_params* params = (hantek_drc_csv_params*) params_any;
     FILE* file = params->file;
     size_t buffer_length = channel->info->buffer_length;
     for (size_t i = 0; i < buffer_length; ++i) {
@@ -47,7 +47,7 @@ bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
             default: 
                 {
                     hantek_drc_data_value value = hantek_drc_format_data(&params->format, channel, buffer[i]);
-                    switch (params->format.type) {
+                    switch (hantek_drc_format_type(&params->format, channel)) {
                     case HANTEK_DRC_DATA_TYPE_F32: print_result = fprintf(file, "%f", (double_t) value.f32); break;
                     case HANTEK_DRC_DATA_TYPE_F64: print_result = fprintf(file, "%f", value.f64); break;
                     case HANTEK_DRC_DATA_TYPE_U8:  print_result = fprintf(file, "%hhu", value.u8); break;
@@ -69,13 +69,12 @@ bool hantek_drc_csv_frame(hantek_drc_channel* channel, const int16_t* buffer) {
         if (fputs(params->line_separator, file) == EOF) {
             return false;
         }
-        
     }
     return true;
 }
 
-void hantek_drc_csv_free(hantek_drc_info* info) {
-    hantek_drc_csv_params* params = (hantek_drc_csv_params*) info->frame_handler.params;
+void hantek_drc_csv_free(void* params_any, hantek_drc_info* info) {
+    hantek_drc_csv_params* params = (hantek_drc_csv_params*) params_any;
     if (params == NULL) {
         return;
     }
@@ -83,7 +82,7 @@ void hantek_drc_csv_free(hantek_drc_info* info) {
         fclose(params->file);
         params->file = NULL;
     }
-    hantek_drc_handler_free(info, &params->format);
+    hantek_drc_handler_free(&params->format, info);
 }
 
 hantek_drc_frame_handler hantek_drc_csv_handler(hantek_drc_csv_params* params) {

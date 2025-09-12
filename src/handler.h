@@ -11,13 +11,12 @@ extern "C" {
 #endif
 
 typedef struct hantek_drc_handler {
-    void(*on_free)(hantek_drc_info* info);
+    void(*on_free)(void* params_any, hantek_drc_info* info);
     void* params;
     bool should_free;
 } hantek_drc_handler;
 
-void hantek_drc_handler_free(hantek_drc_info* info, void* handler_any);
-
+void hantek_drc_handler_free(void* handler_any, hantek_drc_info* info);
 
 #define HANTEK_DRC_HANDLER_ALLOC_DEF( name, type ) \
 hantek_drc_ ## type ## _handler hantek_drc_ ## name ## _handler_alloc(hantek_drc_ ## name ## _params params_init)

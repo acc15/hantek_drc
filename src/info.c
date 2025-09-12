@@ -14,5 +14,5 @@ uint64_t hantek_drc_info_sampling_rate_milli(const hantek_drc_info* info) {
 }
 
 void hantek_drc_info_free(hantek_drc_info* info) {
-    hantek_drc_handler_free(info, &info->frame_handler);
+    hantek_drc_handler_free(&info->handler, info);
 }

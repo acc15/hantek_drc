@@ -41,22 +41,30 @@ typedef union hantek_drc_data_value {
 
 typedef struct hantek_drc_format_handler {
     struct hantek_drc_handler;
-    hantek_drc_data_type type;
+    hantek_drc_data_type (*on_type)(
+        void* params_any, 
+        const hantek_drc_channel* channel
+    );
     hantek_drc_data_value (*on_data)(
-        const struct hantek_drc_format_handler* format, 
+        void* params_any, 
         const hantek_drc_channel* channel, 
         int16_t data
     );
 } hantek_drc_format_handler;
 
+hantek_drc_data_type hantek_drc_format_type(
+    hantek_drc_format_handler* handler, 
+    const hantek_drc_channel* channel
+);
+
 hantek_drc_data_value hantek_drc_format_data(
-    const hantek_drc_format_handler* format, 
+    hantek_drc_format_handler* handler, 
     const hantek_drc_channel* channel, 
     int16_t data
 );
 
 void* hantek_drc_format_frame(
-    const hantek_drc_format_handler* format, 
+    hantek_drc_format_handler* handler, 
     const hantek_drc_channel* channel, 
     const int16_t* frame
 );
@@ -73,7 +81,17 @@ typedef struct hantek_drc_data_format_params {
 hantek_drc_format_handler hantek_drc_data_format_handler(hantek_drc_data_format_params* params);
 HANTEK_DRC_HANDLER_ALLOC_DEF( data_format, format );
 
-void hantek_drc_data_format_scale_free(hantek_drc_info* info);
+
+hantek_drc_data_type hantek_drc_data_format_type(
+    void* params_any, 
+    const hantek_drc_channel* channel
+);
+
+hantek_drc_data_value hantek_drc_data_format(
+    void* params_any, 
+    const hantek_drc_channel* channel, 
+    int16_t data
+);
 
 hantek_drc_data_format_params hantek_drc_data_format_raw(hantek_drc_data_type type);
 hantek_drc_data_format_params hantek_drc_data_format_volts_milli(hantek_drc_data_type type);
@@ -88,12 +106,6 @@ hantek_drc_data_format_params hantek_drc_data_format_mul(
     hantek_drc_data_type type, 
     bool positive,
     int64_t multiplier
-);
-
-hantek_drc_data_value hantek_drc_data_format(
-    const hantek_drc_format_handler* format, 
-    const hantek_drc_channel* channel, 
-    int16_t data
 );
 
 #ifdef __cplusplus
