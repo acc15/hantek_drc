@@ -18,7 +18,7 @@ extern "C" {
 
 typedef struct hantek_drc_frame_handler {
     struct hantek_drc_handler;
-    bool(*on_frame)(void* params_any, hantek_drc_channel* channel, const int16_t* buffer);
+    bool(*on_frame)(void* params_any, const hantek_drc_channel* channel, const int16_t* buffer);
     bool(*on_prepare)(void* params_any, hantek_drc_info* info);
 } hantek_drc_frame_handler;
 

@@ -4,7 +4,7 @@
 
 const size_t HANTEK_DRC_CSV_COLUMN_BITS = 3;
 
-bool hantek_drc_csv_frame(void* params_any, hantek_drc_channel* channel, const int16_t* buffer) {
+bool hantek_drc_csv_frame(void* params_any, const hantek_drc_channel* channel, const int16_t* buffer) {
     hantek_drc_csv_params* params = (hantek_drc_csv_params*) params_any;
     FILE* file = params->file;
     size_t buffer_length = channel->info->buffer_length;
