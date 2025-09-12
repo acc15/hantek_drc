@@ -33,6 +33,8 @@ set(SRC
     src/csv.c
     src/mem.c
     src/handler.c
+    src/filter.c
+    src/frame_handler.c
 )
 
 set(HEADERS 
@@ -47,6 +49,8 @@ set(HEADERS
     src/csv.h
     src/mem.h
     src/handler.h
+    src/filter.h
+    src/frame_handler.h
 )
 
 add_library(hantek_drc ${SRC})

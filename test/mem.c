@@ -1,6 +1,7 @@
 #include "mem.h"
 #include "../src/mem.h"
 #include "../src/read.h"
+#include "../src/filter.h"
 
 struct test_frame_data {
     size_t frame;
@@ -8,14 +9,24 @@ struct test_frame_data {
     float data[3];
 };
 
+bool filter_1ch(void* params, const hantek_drc_channel* channel, const int16_t* buffer) {
+    (void)params;
+    (void)buffer;
+    return channel->number == 0;
+}
+
 START_TEST(write_mem) 
 {
     hantek_drc_mem_params mem = {
         .format = hantek_drc_data_format_handler_alloc(hantek_drc_data_format_volts(HANTEK_DRC_DATA_TYPE_F32))
     };
+    hantek_drc_filter_params filter = {
+        .filter = (hantek_drc_frame_handler) {.on_frame = &filter_1ch},
+        .handler = hantek_drc_mem_handler(&mem)
+    };
     hantek_drc_info info = {
         .caps = hantek_drc_6254bd(),
-        .handler = hantek_drc_mem_handler(&mem)
+        .handler = hantek_drc_filter_handler(&filter)
     };
 
     ck_assert(hantek_drc_read_file("samples/data/ch_1_timediv_20ms_vdiv_500mv_triangle_full_scale.0.drc", &info));

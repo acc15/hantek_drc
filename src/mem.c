@@ -44,7 +44,7 @@ bool hantek_drc_mem_frame(void* params_any, const hantek_drc_channel* channel, c
     return true;
 }
 
-void hantek_drc_mem_free(void* params_any, hantek_drc_info* info) {
+void hantek_drc_mem_free(void* params_any, const hantek_drc_info* info) {
     hantek_drc_mem_params* params = (hantek_drc_mem_params*) params_any;
     if (params == NULL) {
         return;

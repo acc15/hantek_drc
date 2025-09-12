@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 #include "channel.h"
-#include "handler.h"
+#include "frame_handler.h"
 #include "caps.h"
 
 #ifndef HANTEK_DRC_MAX_CHANNELS
@@ -16,11 +16,6 @@
 extern "C" {
 #endif
 
-typedef struct hantek_drc_frame_handler {
-    struct hantek_drc_handler;
-    bool(*on_frame)(void* params_any, const hantek_drc_channel* channel, const int16_t* buffer);
-    bool(*on_prepare)(void* params_any, hantek_drc_info* info);
-} hantek_drc_frame_handler;
 
 typedef struct hantek_drc_info {
     hantek_drc_caps caps;

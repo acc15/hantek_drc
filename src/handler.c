@@ -2,7 +2,7 @@
 #include "handler.h"
 #include "info.h"
 
-void hantek_drc_handler_free(void* handler_any, hantek_drc_info* info) {
+void hantek_drc_handler_free(void* handler_any, const hantek_drc_info* info) {
     hantek_drc_handler* handler = (hantek_drc_handler*) handler_any;
     if (handler->on_free != NULL) {
         handler->on_free(handler->params, info);
