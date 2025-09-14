@@ -15,3 +15,17 @@ bool hantek_drc_frame_handler_frame(
 ) {
     return handler->on_frame == NULL || handler->on_frame(handler->params, channel, buffer);
 }
+
+bool hantek_drc_frame_handler_frame_prepare(
+    hantek_drc_frame_handler* handler, 
+    const hantek_drc_info* info
+) {
+    return handler->on_frame_prepare == NULL || handler->on_frame_prepare(handler->params, info);
+}
+
+bool hantek_drc_frame_handler_frame_finish(
+    hantek_drc_frame_handler* handler, 
+    const hantek_drc_info* info
+) {
+    return handler->on_frame_finish == NULL || handler->on_frame_finish(handler->params, info);
+}
