@@ -8,11 +8,11 @@ START_TEST(write_csv)
     hantek_drc_csv_params csv_params = {
         .path = "build/test.csv",
         .columns = hantek_drc_csv_columns(2, HANTEK_DRC_CSV_COLUMN_DATA, HANTEK_DRC_CSV_COLUMN_GLOBAL_INDEX),
-        .format = hantek_drc_data_format_handler(&format_params)
+        .format = hantek_drc_data_format(&format_params)
     };
     hantek_drc_info info = {
         .caps = hantek_drc_6254bd(),
-        .handler = hantek_drc_csv_handler(&csv_params)
+        .handler = hantek_drc_csv(&csv_params)
     };
     
     ck_assert(hantek_drc_read_file("samples/data/ch_1_timediv_20ms_vdiv_500mv_triangle_full_scale.0.drc", &info));

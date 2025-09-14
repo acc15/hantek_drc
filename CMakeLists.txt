@@ -35,6 +35,7 @@ set(SRC
     src/handler.c
     src/filter.c
     src/frame_handler.c
+    src/range.c
 )
 
 set(HEADERS 
@@ -51,13 +52,14 @@ set(HEADERS
     src/handler.h
     src/filter.h
     src/frame_handler.h
+    src/range.h
 )
 
 add_library(hantek_drc ${SRC})
 target_sources(hantek_drc PUBLIC FILE_SET HEADERS BASE_DIRS src FILES ${HEADERS})
 
 include(CTest)
-if (BUILD_TESTING)
+if(BUILD_TESTING)
     add_executable(hantek_drc_test 
         test/main.c    
         test/value.c
@@ -79,6 +81,11 @@ if (BUILD_TESTING)
     # Ignore warning for check unit testing to work
     target_compile_options(hantek_drc_test PRIVATE -Wno-gnu-zero-variadic-macro-arguments)
     add_test(NAME hantek_drc_test COMMAND hantek_drc_test)
+endif()
+
+option(BUILD_EXAMPLES "Whether or not build example subprojects" FALSE)
+if(BUILD_EXAMPLES)
+    add_subdirectory(examples/gnuplot)
 endif()
 
 if(NOT EXPORT_NAME)

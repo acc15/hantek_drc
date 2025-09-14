@@ -85,7 +85,7 @@ void hantek_drc_csv_free(void* params_any, const hantek_drc_info* info) {
     hantek_drc_handler_free(&params->format, info);
 }
 
-hantek_drc_frame_handler hantek_drc_csv_handler(hantek_drc_csv_params* params) {
+hantek_drc_frame_handler hantek_drc_csv(hantek_drc_csv_params* params) {
     if (params->file == NULL) {
         if (params->path != NULL) {
             params->file = fopen(params->path, "wt");

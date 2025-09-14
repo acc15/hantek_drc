@@ -78,7 +78,7 @@ typedef struct hantek_drc_data_format_params {
     bool positive;
 } hantek_drc_data_format_params;
 
-hantek_drc_format_handler hantek_drc_data_format_handler(hantek_drc_data_format_params* params);
+hantek_drc_format_handler hantek_drc_data_format(hantek_drc_data_format_params* params);
 HANTEK_DRC_HANDLER_ALLOC_DEF( data_format, format );
 
 
@@ -87,7 +87,7 @@ hantek_drc_data_type hantek_drc_data_format_type(
     const hantek_drc_channel* channel
 );
 
-hantek_drc_data_value hantek_drc_data_format(
+hantek_drc_data_value hantek_drc_data_format_data(
     void* params_any, 
     const hantek_drc_channel* channel, 
     int16_t data

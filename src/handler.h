@@ -19,7 +19,7 @@ typedef struct hantek_drc_handler {
 void hantek_drc_handler_free(void* handler_any, const hantek_drc_info* info);
 
 #define HANTEK_DRC_HANDLER_ALLOC_DEF( name, type ) \
-hantek_drc_ ## type ## _handler hantek_drc_ ## name ## _handler_alloc(hantek_drc_ ## name ## _params params_init)
+hantek_drc_ ## type ## _handler hantek_drc_ ## name ## _alloc(hantek_drc_ ## name ## _params params_init)
 
 #define HANTEK_DRC_HANDLER_ALLOC_IMPL( name, type ) \
 HANTEK_DRC_HANDLER_ALLOC_DEF( name, type ) { \
@@ -29,7 +29,7 @@ HANTEK_DRC_HANDLER_ALLOC_DEF( name, type ) { \
         return (hantek_drc_ ## type ## _handler) {0}; \
     } \
     *params = params_init; \
-    hantek_drc_ ## type ## _handler handler = hantek_drc_ ## name ## _handler(params); \
+    hantek_drc_ ## type ## _handler handler = hantek_drc_ ## name (params); \
     handler.should_free = true; \
     return handler; \
 }

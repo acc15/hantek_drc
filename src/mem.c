@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-hantek_drc_frame_handler hantek_drc_mem_handler(hantek_drc_mem_params* params) {
+hantek_drc_frame_handler hantek_drc_mem(hantek_drc_mem_params* params) {
     return (hantek_drc_frame_handler) {
         .on_prepare = NULL,
         .on_frame = &hantek_drc_mem_frame,

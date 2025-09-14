@@ -79,7 +79,7 @@ hantek_drc_data_type hantek_drc_data_format_type(
     return params->type; 
 }
 
-hantek_drc_data_value hantek_drc_data_format(
+hantek_drc_data_value hantek_drc_data_format_data(
     void* params_any, 
     const hantek_drc_channel* channel, 
     int16_t data
@@ -124,11 +124,10 @@ hantek_drc_data_value hantek_drc_data_format(
     return result;
 }
 
-hantek_drc_format_handler hantek_drc_data_format_handler(hantek_drc_data_format_params* params) {
+hantek_drc_format_handler hantek_drc_data_format(hantek_drc_data_format_params* params) {
     return (hantek_drc_format_handler) {
         .on_type = &hantek_drc_data_format_type,
-        .on_data = &hantek_drc_data_format,
-        .on_free = NULL,
+        .on_data = &hantek_drc_data_format_data,
         .params = params
     };
 }
