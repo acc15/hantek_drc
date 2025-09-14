@@ -5,6 +5,9 @@
 #include <unistd.h>
 
 #include "../../src/range.h"
+#include "../../src/read.h"
+#include "../../src/filter.h"
+#include "../../src/csv.h"
 
 #ifndef PROGRAM_NAME
 #   define PROGRAM_NAME "hantek_drc_gnuplot"
@@ -66,6 +69,11 @@ int main(int argc, char *argv[]) {
     printf("), frame (");
     print_range(&frame_range);
     printf(")\n");
+
+    // hantek_drc_range_filter_params range_filter = {
+    //     .
+    // };
+
 
     FILE* gnuplot = popen("gnuplot", "w");
     if (gnuplot == NULL) {

@@ -45,22 +45,11 @@ bool hantek_drc_csv_frame(void* params_any, const hantek_drc_channel* channel, c
                 }
 
             default: 
-                {
-                    hantek_drc_data_value value = hantek_drc_format_data(&params->format, channel, buffer[i]);
-                    switch (hantek_drc_format_type(&params->format, channel)) {
-                    case HANTEK_DRC_DATA_TYPE_F32: print_result = fprintf(file, "%f", (double_t) value.f32); break;
-                    case HANTEK_DRC_DATA_TYPE_F64: print_result = fprintf(file, "%f", value.f64); break;
-                    case HANTEK_DRC_DATA_TYPE_U8:  print_result = fprintf(file, "%hhu", value.u8); break;
-                    case HANTEK_DRC_DATA_TYPE_U16: print_result = fprintf(file, "%hu", value.u16); break;
-                    case HANTEK_DRC_DATA_TYPE_U32: print_result = fprintf(file, "%u", value.u32); break;
-                    case HANTEK_DRC_DATA_TYPE_U64: print_result = fprintf(file, "%lu", value.u64); break;
-                    case HANTEK_DRC_DATA_TYPE_I8:  print_result = fprintf(file, "%hhd", value.i8); break;
-                    case HANTEK_DRC_DATA_TYPE_I16: print_result = fprintf(file, "%hd", value.i16); break;
-                    case HANTEK_DRC_DATA_TYPE_I32: print_result = fprintf(file, "%d", value.i32); break;
-                    case HANTEK_DRC_DATA_TYPE_I64: print_result = fprintf(file, "%ld", value.i64); break;
-                    }
-                    break;
-                }
+                print_result = hantek_drc_data_print(file, 
+                    hantek_drc_format_type(&params->format, channel),
+                    hantek_drc_format_data(&params->format, channel, buffer[i])
+                );
+                break;
             }
             if (print_result < 0) {
                 return false;

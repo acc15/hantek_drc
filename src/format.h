@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdio.h>
 #include <stddef.h>
 #include <stdbool.h>
 #include <math.h>
@@ -38,6 +39,8 @@ typedef union hantek_drc_data_value {
     float_t     f32;
     double_t    f64;
 } hantek_drc_data_value;
+
+int hantek_drc_data_print(FILE* file, hantek_drc_data_type type, hantek_drc_data_value value);
 
 typedef struct hantek_drc_format_handler {
     struct hantek_drc_handler;

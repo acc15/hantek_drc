@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 #include "format.h"
 #include "info.h"
@@ -16,6 +17,24 @@ size_t hantek_drc_data_type_size(hantek_drc_data_type type) {
         case HANTEK_DRC_DATA_TYPE_U8:  return sizeof(uint8_t);
         case HANTEK_DRC_DATA_TYPE_F64: return sizeof(double_t);
         default:                       return sizeof(float_t);
+    }
+}
+
+int hantek_drc_data_print(FILE* file, hantek_drc_data_type type, hantek_drc_data_value value) {
+    switch (type) {
+    case HANTEK_DRC_DATA_TYPE_F32: return fprintf(file, "%f", (double_t) value.f32);
+    case HANTEK_DRC_DATA_TYPE_F64: return fprintf(file, "%f", value.f64);
+    case HANTEK_DRC_DATA_TYPE_U8:  return fprintf(file, "%hhu", value.u8);
+    case HANTEK_DRC_DATA_TYPE_U16: return fprintf(file, "%hu", value.u16);
+    case HANTEK_DRC_DATA_TYPE_U32: return fprintf(file, "%u", value.u32);
+    case HANTEK_DRC_DATA_TYPE_U64: return fprintf(file, "%lu", value.u64);
+    case HANTEK_DRC_DATA_TYPE_I8:  return fprintf(file, "%hhd", value.i8);
+    case HANTEK_DRC_DATA_TYPE_I16: return fprintf(file, "%hd", value.i16);
+    case HANTEK_DRC_DATA_TYPE_I32: return fprintf(file, "%d", value.i32);
+    case HANTEK_DRC_DATA_TYPE_I64: return fprintf(file, "%ld", value.i64);
+    default:
+        errno = EINVAL;
+        return -1;
     }
 }
 
