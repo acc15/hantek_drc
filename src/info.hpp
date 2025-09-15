@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <vector>
+#include <istream>
 
 #include "caps.hpp"
 #include "channel.hpp"

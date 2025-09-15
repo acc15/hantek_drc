@@ -5,6 +5,8 @@
 
 namespace hantek_drc {
 
+const std::size_t BUFFER_LENGTH = 4096;
+
 #pragma pack(push, 1)
 
 struct file_signature {

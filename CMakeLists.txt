@@ -20,7 +20,7 @@ if(MSVC)
         /Zc:__cplusplus
      )
 else()
-     add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+     add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wno-missing-field-initializers)
 endif()
 
 set(SRC 
@@ -54,6 +54,7 @@ if (BUILD_TESTING)
         test/value.cpp
         test/caps.cpp
         test/info.cpp
+        test/reader.cpp
     )
     target_link_libraries(hantek_drc_test PRIVATE hantek_drc doctest::doctest)
     add_test(NAME hantek_drc_test COMMAND hantek_drc_test)

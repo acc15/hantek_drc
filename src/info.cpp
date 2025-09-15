@@ -5,7 +5,7 @@
 
 namespace hantek_drc {
 
-info::info(const hantek_drc::caps& caps): caps(caps) {}
+info::info(const hantek_drc::caps& caps): caps(caps), buffer_length() {}
 
 std::istream& info::read_signature(std::istream& stream) {
     file_signature signature;
@@ -33,7 +33,7 @@ std::istream& info::read_channels(std::istream& stream) {
         channels.emplace_back(channel { 
             .info = *this, 
             .index = channels.size(),
-            .number = i, 
+            .number = i + 1, 
             .voltage = fc.voltage,
             .multiplier = fc.multiplier,
             .coupling = static_cast<coupling>(fc.coupling),
@@ -53,7 +53,15 @@ std::istream& info::read_general(std::istream& stream) {
 }
 
 std::istream& operator>>(std::istream& stream, info& info)  {
-    info.read_signature(stream) && info.read_channels(stream) && info.read_general(stream);
+    if (!info.read_signature(stream)) {
+        return stream;
+    }
+    if (!info.read_channels(stream)) {
+        return stream;
+    } 
+    if (!info.read_general(stream)) {
+        return stream;
+    }
     return stream;
 }
 
