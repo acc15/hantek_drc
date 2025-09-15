@@ -71,7 +71,7 @@ bool hantek_drc_gnuplot_finish(void* params_any, const hantek_drc_info* info) {
     bool channel_title[HANTEK_DRC_MAX_CHANNELS] = {0};
     for (size_t i = 0; i < params->frame_total; ++i) {
         size_t channel_index = params->frame_channels[i];
-        size_t channel_number = info->channel[channel_index].number + 1;
+        size_t channel_number = info->channel[channel_index].number;
         
         if (i == 0) {
             fprintf(params->pipe, "plot $DRC");

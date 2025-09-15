@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stddef.h>
-#include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
+
+#include <getopt.h>
 
 #include "../../src/range.h"
 #include "../../src/format.h"
@@ -15,53 +15,38 @@
 #   define PROGRAM_NAME "hantek_drc_gnuplot"
 #endif
 
-hantek_drc_range parse_range(const char* str) {
-    hantek_drc_range result = {.enabled = false};
-    if (str == NULL) {
-        return result;
-    }
-    
-    const char* start_ptr = str;
-    char* end_ptr;
-
-    result.min = result.max = strtol(start_ptr, &end_ptr, 10);
-    if (end_ptr == start_ptr) {
-        return result;
-    }
-
-    result.enabled = true;
-    if (*end_ptr == 0) {
-        return result;
-    }
-
-    if (*end_ptr == '-') {
-        start_ptr = end_ptr + 1;
-    }
-    result.max = strtol(start_ptr, &end_ptr, 10);
-    if (end_ptr == start_ptr) {
-        result.max = result.min;
-    }
-    return result;
+int usage(void) {
+    printf("Usage:\n\n" PROGRAM_NAME " <drc-path> [-c <channel-range>] [-f <frame-range>]\n");
+    return -1;
 }
 
 int main(int argc, char *argv[]) {
-    (void)argv;
-    if (argc < 2) {
-        printf("Usage:\n\n" PROGRAM_NAME " <drc-path> [channel-range] [frame-range]\n");
-        return -1;
+    hantek_drc_range_filter_params range = {0};
+
+    int opt;
+    while ((opt = getopt(argc, argv, "c:f:")) != -1) {
+        switch (opt) {
+        case 'c':
+            range.channel = hantek_drc_parse_range(optarg);
+            break;
+        case 'f':
+            range.frame = hantek_drc_parse_range(optarg);
+            break;
+        default:
+            return usage();
+        }
+    }
+    if (optind >= argc) {
+        return usage();
     }
 
-    hantek_drc_range_filter_params range_filter = {
-        .channel = parse_range(argc > 2 ? argv[2] : NULL),
-        .frame = parse_range(argc > 3 ? argv[3] : NULL)
-    };
     hantek_drc_data_format_params format = hantek_drc_data_format_volts(HANTEK_DRC_DATA_TYPE_F32);
     hantek_drc_gnuplot_params gnuplot = {
-        .drc_path = argv[1],
+        .drc_path = argv[optind],
         .format = hantek_drc_data_format(&format)
     };
     hantek_drc_filter_params filter = {
-        .filter = hantek_drc_range_filter(&range_filter),
+        .filter = hantek_drc_range_filter(&range),
         .handler = hantek_drc_gnuplot(&gnuplot)
     };
     hantek_drc_info info = {

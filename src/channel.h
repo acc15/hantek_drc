@@ -12,7 +12,7 @@ extern "C" {
 
 typedef struct hantek_drc_channel {
     size_t index; // zero-based index of enabled channel
-    size_t number; // zero-based channel number (0 - 1CH, 1 - 2CH, etc)
+    size_t number; // one-based channel number (1 - 1CH, 2 - 2CH, etc)
     uint16_t voltage; // voltage index
     uint16_t multiplier; // multiplier index (most cases - 10^multiplier)
     hantek_drc_coupling coupling;

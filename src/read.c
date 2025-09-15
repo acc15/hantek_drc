@@ -68,7 +68,7 @@ bool hantek_drc_read_channels(FILE* file, hantek_drc_info* info) {
 
         hantek_drc_channel* channel = &info->channel[info->channel_count];
         channel->index = info->channel_count;
-        channel->number = i;
+        channel->number = i + 1;
         channel->coupling = file_channel_info.coupling;
         channel->multiplier = file_channel_info.multiplier;
         channel->lever = file_channel_info.lever_1;

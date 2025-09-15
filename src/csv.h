@@ -39,6 +39,7 @@ typedef struct hantek_drc_csv_params {
 
 hantek_drc_csv_column hantek_drc_csv_columns(size_t count, ...);
 hantek_drc_csv_column hantek_drc_csv_column_at(hantek_drc_csv_column cols, size_t index);
+void hantek_drc_csv_column_set(hantek_drc_csv_column* cols, size_t index, hantek_drc_csv_column col);
 
 hantek_drc_frame_handler hantek_drc_csv(hantek_drc_csv_params* params);
 HANTEK_DRC_HANDLER_ALLOC_DEF(csv, frame);

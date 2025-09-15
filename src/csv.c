@@ -124,13 +124,17 @@ hantek_drc_csv_column hantek_drc_csv_column_at(hantek_drc_csv_column cols, size_
     return (cols >> (HANTEK_DRC_CSV_COLUMN_BITS * index)) & ((1U << HANTEK_DRC_CSV_COLUMN_BITS) - 1U);
 }
 
+void hantek_drc_csv_column_set(hantek_drc_csv_column* cols, size_t index, hantek_drc_csv_column col) {
+    *cols |= (col << (HANTEK_DRC_CSV_COLUMN_BITS * index));
+}
+
 hantek_drc_csv_column hantek_drc_csv_columns(size_t count, ...) {
     va_list args;
     va_start(args, count);
     hantek_drc_csv_column result = 0;
     for (size_t i = 0; i < count; ++i) {
         hantek_drc_csv_column col = va_arg(args, hantek_drc_csv_column);
-        result |= (col << (HANTEK_DRC_CSV_COLUMN_BITS * i));
+        hantek_drc_csv_column_set(&result, i, col);
     }
     va_end(args);
     return result;

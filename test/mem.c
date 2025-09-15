@@ -12,7 +12,7 @@ struct test_frame_data {
 bool filter_1ch(void* params, const hantek_drc_channel* channel, const int16_t* buffer) {
     (void)params;
     (void)buffer;
-    return channel->number == 0;
+    return channel->number == 1;
 }
 
 START_TEST(write_mem) 

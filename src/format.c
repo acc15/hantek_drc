@@ -134,7 +134,7 @@ hantek_drc_data_value hantek_drc_data_format_data(
         float_t float_value = (float_t) value / (float_t) divider;
         result.f32 = params->positive && float_value < 0.0 ? 0.F : float_value;
     } else if (params->type == HANTEK_DRC_DATA_TYPE_F64) {
-        double_t double_value = (float_t) value / (float_t) divider;
+        double_t double_value = (double_t) value / (double_t) divider;
         result.f64 = params->positive && double_value < 0.0 ? 0.0 : double_value;
     } else {
         value /= divider;
@@ -142,14 +142,14 @@ hantek_drc_data_value hantek_drc_data_format_data(
             value = 0;
         }
         switch (params->type) {
-        case HANTEK_DRC_DATA_TYPE_I32: result.i32 = (int32_t) value;    break;
-        case HANTEK_DRC_DATA_TYPE_I16: result.i16 = (int16_t) value;    break;
-        case HANTEK_DRC_DATA_TYPE_I8:  result.i8  = (int8_t) value;     break;
-        case HANTEK_DRC_DATA_TYPE_U64: result.u64 = (uint64_t) value;   break;
-        case HANTEK_DRC_DATA_TYPE_U32: result.u32 = (uint32_t) value;   break;
-        case HANTEK_DRC_DATA_TYPE_U16: result.u16 = (uint16_t) value;   break;
-        case HANTEK_DRC_DATA_TYPE_U8:  result.u8  = (uint8_t) value;    break;
-        default:                       result.i64 = value;              break;
+        case HANTEK_DRC_DATA_TYPE_I32: result.i32 = (int32_t)   value; break;
+        case HANTEK_DRC_DATA_TYPE_I16: result.i16 = (int16_t)   value; break;
+        case HANTEK_DRC_DATA_TYPE_I8:  result.i8  = (int8_t)    value; break;
+        case HANTEK_DRC_DATA_TYPE_U64: result.u64 = (uint64_t)  value; break;
+        case HANTEK_DRC_DATA_TYPE_U32: result.u32 = (uint32_t)  value; break;
+        case HANTEK_DRC_DATA_TYPE_U16: result.u16 = (uint16_t)  value; break;
+        case HANTEK_DRC_DATA_TYPE_U8:  result.u8  = (uint8_t)   value; break;
+        default:                       result.i64 =             value; break;
         }
     }
     return result;
