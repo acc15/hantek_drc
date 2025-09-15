@@ -34,7 +34,9 @@ typedef struct hantek_drc_info {
 uint64_t hantek_drc_info_timediv_nanos(const hantek_drc_info* info);
 uint64_t hantek_drc_info_sampling_rate_milli(const hantek_drc_info* info);
 
+bool hantek_drc_info_finish(struct hantek_drc_info* info);
 void hantek_drc_info_free(struct hantek_drc_info* info);
+bool hantek_drc_info_finish_free(struct hantek_drc_info* info);
 
 #ifdef __cplusplus
 }

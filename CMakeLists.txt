@@ -36,6 +36,7 @@ set(SRC
     src/filter.c
     src/frame_handler.c
     src/range.c
+    src/gnuplot.c
 )
 
 set(HEADERS 
@@ -53,6 +54,7 @@ set(HEADERS
     src/filter.h
     src/frame_handler.h
     src/range.h
+    src/gnuplot.h
 )
 
 add_library(hantek_drc ${SRC})

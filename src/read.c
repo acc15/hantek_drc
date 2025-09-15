@@ -122,9 +122,6 @@ bool hantek_drc_read_data(FILE* file, hantek_drc_info* info) {
         if (!has_data) {
             break;
         }
-        if (channel_index == 0 && !hantek_drc_frame_handler_frame_prepare(handler, info)) {
-            return false;
-        }
         if (!hantek_drc_frame_handler_frame(handler, channel, buffer)) {
             return false;
         }
@@ -132,9 +129,6 @@ bool hantek_drc_read_data(FILE* file, hantek_drc_info* info) {
         ++channel_index;
         if (channel_index >= info->channel_count) {
             channel_index = 0;
-            if (!hantek_drc_frame_handler_frame_finish(handler, info)) {
-                return false;
-            }
             ++info->frame_count;
         }
     }

@@ -2,8 +2,9 @@
 
 hantek_drc_frame_handler hantek_drc_filter(hantek_drc_filter_params* params) {
     return (hantek_drc_frame_handler) {
-        .on_frame = &hantek_drc_filter_frame,
         .on_prepare = &hantek_drc_filter_prepare,
+        .on_frame = &hantek_drc_filter_frame,
+        .on_finish = &hantek_drc_filter_finish,
         .on_free = &hantek_drc_filter_free,
         .params = params
     };
@@ -21,6 +22,12 @@ bool hantek_drc_filter_frame(void* params_any, const hantek_drc_channel* channel
     hantek_drc_filter_params* params = (hantek_drc_filter_params*) params_any;
     return !hantek_drc_frame_handler_frame(&params->filter, channel, buffer) || 
         hantek_drc_frame_handler_frame(&params->handler, channel, buffer);
+}
+
+bool hantek_drc_filter_finish(void* params_any, const hantek_drc_info* info) {
+    hantek_drc_filter_params* params = (hantek_drc_filter_params*) params_any;
+    return hantek_drc_frame_handler_finish(&params->filter, info) && 
+        hantek_drc_frame_handler_finish(&params->handler, info);
 }
 
 void hantek_drc_filter_free(void* params_any, const hantek_drc_info* info) {
