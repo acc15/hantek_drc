@@ -72,6 +72,13 @@ void* hantek_drc_format_frame(
     const int16_t* frame
 );
 
+int hantek_drc_format_print(
+    FILE* file, 
+    hantek_drc_format_handler* format, 
+    const hantek_drc_channel* channel, 
+    int16_t data
+);
+
 typedef struct hantek_drc_data_format_params {
     hantek_drc_data_type type;
     int64_t (*multiplier_fn)(const hantek_drc_channel*);

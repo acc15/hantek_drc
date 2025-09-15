@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <unistd.h>
+#include <string.h>
 
 #include "../../src/range.h"
 #include "../../src/format.h"
@@ -57,51 +57,95 @@ void hit_enter(void) {
 typedef struct hantek_drc_gnuplot_params {
     FILE* pipe;
     hantek_drc_format_handler format;
+    size_t* frame_channels; // indexes of channels for each written frame
+    size_t frame_total; // count of recorded frames
+    size_t frame_allocated; // count of frames allocated
 } hantek_drc_gnuplot_params;
+
+bool hantek_drc_gnuplot_prepare(void* params_any, const hantek_drc_info* info) {
+    hantek_drc_gnuplot_params* params = (hantek_drc_gnuplot_params*) params_any;
+    (void)info;
+
+    return fputs("$DRC << EOD\n", params->pipe) != EOF;
+}
 
 bool hantek_drc_gnuplot_frame(void* params_any, const hantek_drc_channel* channel, const int16_t* frame) {
     hantek_drc_gnuplot_params* params = (hantek_drc_gnuplot_params*) params_any;
-    for (size_t i = 0; i < channel->info->buffer_length; ++i) {
-        fprintf(params->pipe, "%zu,", channel->number);
-        hantek_drc_data_print(params->pipe, 
-            hantek_drc_format_type(&params->format, channel), 
-            hantek_drc_format_data(&params->format, channel, frame[i])
-        );
-        fputc('\n', params->pipe);
+    
+    if (params->frame_allocated <= params->frame_total) {
+        size_t frame_allocated = params->frame_allocated < 16 ? 16 : params->frame_allocated * 2;
+        size_t* frame_channels = (size_t*) realloc(params->frame_channels, frame_allocated * sizeof(size_t));
+        if (frame_channels == NULL) {
+            return false;
+        }
+        memset(frame_channels + params->frame_allocated, 0, (frame_allocated - params->frame_allocated)*sizeof(size_t));
+        params->frame_channels = frame_channels;
+        params->frame_allocated = frame_allocated;
     }
-    fputs("e\n", params->pipe);
+
+    size_t x_offset = channel->info->frame_count * channel->info->buffer_length;
+    for (size_t i = 0; i < channel->info->buffer_length; ++i) {
+        if (
+            fprintf(params->pipe, "%zu ", x_offset + i) <= 0 || 
+            hantek_drc_format_print(params->pipe, &params->format, channel, frame[i]) <= 0 || 
+            fputc('\n', params->pipe) <= 0
+        ) {
+            return false;
+        }
+    }
+
+    if (fputs("\n\n", params->pipe) == EOF) {
+        return false;
+    }
+
+    params->frame_channels[params->frame_total] = channel->index;
+    ++params->frame_total;
     return true;
 }
 
-bool hantek_drc_gnuplot_frame_prepare(void* params_any, const hantek_drc_info* info) {
+void hantek_drc_gnuplot_free(void* params_any, const hantek_drc_info* info) {
     hantek_drc_gnuplot_params* params = (hantek_drc_gnuplot_params*) params_any;
-    fprintf(params->pipe, "set title \"Frame %zu\"\n", info->frame_count);
-    for (size_t i = 0; i < info->channel_count; ++i) {
+    (void)info;
+    
+    fputs("EOD\n", params->pipe);
+
+    bool channel_title[HANTEK_DRC_MAX_CHANNELS] = {0};
+    for (size_t i = 0; i < params->frame_total; ++i) {
+        size_t channel_index = params->frame_channels[i];
+        size_t channel_number = info->channel[channel_index].number + 1;
+        
         if (i == 0) {
-            fprintf(params->pipe, "plot \"-\"");
+            fprintf(params->pipe, "plot $DRC");
         } else {
             fprintf(params->pipe, ",\"\"");
         }
-        fprintf(params->pipe, " with lines title \"CH%zu\"", (i + 1));
+
+        fprintf(params->pipe, " index %zu with lines", i);
+        if (!channel_title[channel_index]) {
+            fprintf(params->pipe, " title \"CH%zu\"", channel_number);
+            channel_title[channel_index] = true;
+        } else {
+            fputs(" notitle", params->pipe);
+        }
+        fprintf(params->pipe, " linetype %zu", channel_number);
     }
     fputc('\n', params->pipe);
-    return true;
-}
-
-bool hantek_drc_gnuplot_frame_finish(void* params_any, const hantek_drc_info* info) {
-    (void)info;
-    hantek_drc_gnuplot_params* params = (hantek_drc_gnuplot_params*) params_any;
     fflush(params->pipe);
     hit_enter();
-    return true;
+
+    if (params->frame_channels != NULL) {
+        free(params->frame_channels);
+        params->frame_channels = NULL;
+    }
 }
+
 
 hantek_drc_frame_handler hantek_drc_gnuplot(hantek_drc_gnuplot_params* params) {
     return (hantek_drc_frame_handler) {
-        .params = &params,
+        .params = params,
+        .on_prepare = &hantek_drc_gnuplot_prepare,
         .on_frame = &hantek_drc_gnuplot_frame,
-        .on_frame_prepare = &hantek_drc_gnuplot_frame_prepare,
-        .on_frame_finish = &hantek_drc_gnuplot_frame_finish,
+        .on_free = &hantek_drc_gnuplot_free
     };
 }
 
@@ -121,12 +165,12 @@ int main(int argc, char *argv[]) {
     print_range(&frame_range);
     printf(")\n");
 
-
     FILE* gnuplot = popen("gnuplot", "w");
     if (gnuplot == NULL) {
         return -1;
     }
-    fprintf(gnuplot, "set grid\n");
+    fputs("set grid\n", gnuplot);
+    fprintf(gnuplot, "set title \"%s\"\n", input_path);
 
     hantek_drc_data_format_params format = hantek_drc_data_format_volts(HANTEK_DRC_DATA_TYPE_F32);
     hantek_drc_gnuplot_params params = {

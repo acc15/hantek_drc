@@ -89,6 +89,18 @@ void* hantek_drc_format_frame(
     return data;
 }
 
+int hantek_drc_format_print(
+    FILE* file, 
+    hantek_drc_format_handler* format, 
+    const hantek_drc_channel* channel, 
+    int16_t data
+) {
+    return hantek_drc_data_print(file, 
+        hantek_drc_format_type(format, channel), 
+        hantek_drc_format_data(format, channel, data)
+    );
+}
+
 hantek_drc_data_type hantek_drc_data_format_type(
     void* params_any, 
     const hantek_drc_channel* channel

@@ -45,10 +45,7 @@ bool hantek_drc_csv_frame(void* params_any, const hantek_drc_channel* channel, c
                 }
 
             default: 
-                print_result = hantek_drc_data_print(file, 
-                    hantek_drc_format_type(&params->format, channel),
-                    hantek_drc_format_data(&params->format, channel, buffer[i])
-                );
+                print_result = hantek_drc_format_print(file, &params->format, channel, buffer[i]);
                 break;
             }
             if (print_result < 0) {
