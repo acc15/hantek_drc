@@ -11,12 +11,14 @@ extern "C" {
 #endif
 
 typedef enum hantek_drc_csv_column {
-    HANTEK_DRC_CSV_COLUMN_DEFAULT,
-    HANTEK_DRC_CSV_COLUMN_INDEX,
-    HANTEK_DRC_CSV_COLUMN_FRAME,
-    HANTEK_DRC_CSV_COLUMN_DATA,
-    HANTEK_DRC_CSV_COLUMN_CHANNEL,
-    HANTEK_DRC_CSV_COLUMN_GLOBAL_INDEX
+    HANTEK_DRC_CSV_COLUMN_DEFAULT, // stub value to use default column list
+    HANTEK_DRC_CSV_COLUMN_FRAME_INDEX, // sample index local to frame
+    HANTEK_DRC_CSV_COLUMN_CHANNEL_INDEX, // sample index local to channel
+    HANTEK_DRC_CSV_COLUMN_GLOBAL_INDEX, // global sample index (unique across all channels)
+    HANTEK_DRC_CSV_COLUMN_FRAME, // frame index
+    HANTEK_DRC_CSV_COLUMN_DATA, // data
+    HANTEK_DRC_CSV_COLUMN_CHANNEL, // channel index
+    HANTEK_DRC_CSV_COLUMN_CHANNEL_NUMBER, // channel number
 } hantek_drc_csv_column;
 
 extern const size_t HANTEK_DRC_CSV_COLUMN_BITS;

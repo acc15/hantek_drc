@@ -14,6 +14,7 @@ typedef struct hantek_drc_range {
 } hantek_drc_range;
 
 bool hantek_drc_range_contains(const hantek_drc_range* range, size_t value);
+hantek_drc_range hantek_drc_parse_range(const char* str);
 
 #ifdef __cplusplus
 }

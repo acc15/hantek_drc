@@ -23,15 +23,23 @@ bool hantek_drc_csv_frame(void* params_any, const hantek_drc_channel* channel, c
             int print_result = 0;
             switch (col) {
             case HANTEK_DRC_CSV_COLUMN_CHANNEL:
-                print_result = fprintf(file, "%zu", channel->number + 1);
+                print_result = fprintf(file, "%zu", channel->index);
+                break;
+
+            case HANTEK_DRC_CSV_COLUMN_CHANNEL_NUMBER:
+                print_result = fprintf(file, "%zu", channel->number);
                 break;
 
             case HANTEK_DRC_CSV_COLUMN_FRAME:
                 print_result = fprintf(file, "%zu", channel->info->frame_count);
                 break;
 
-            case HANTEK_DRC_CSV_COLUMN_INDEX:
+            case HANTEK_DRC_CSV_COLUMN_FRAME_INDEX:
                 print_result = fprintf(file, "%zu", i);
+                break;
+
+            case HANTEK_DRC_CSV_COLUMN_CHANNEL_INDEX:
+                print_result = fprintf(file, "%zu", (channel->info->frame_count * channel->info->buffer_length) + i);
                 break;
 
             case HANTEK_DRC_CSV_COLUMN_GLOBAL_INDEX:
@@ -89,7 +97,7 @@ hantek_drc_frame_handler hantek_drc_csv(hantek_drc_csv_params* params) {
         params->columns = hantek_drc_csv_columns(4, 
             HANTEK_DRC_CSV_COLUMN_CHANNEL, 
             HANTEK_DRC_CSV_COLUMN_FRAME, 
-            HANTEK_DRC_CSV_COLUMN_INDEX,
+            HANTEK_DRC_CSV_COLUMN_FRAME_INDEX,
             HANTEK_DRC_CSV_COLUMN_DATA
         );
     }

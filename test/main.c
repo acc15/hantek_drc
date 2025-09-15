@@ -3,6 +3,7 @@
 #include "read.h"
 #include "csv.h"
 #include "mem.h"
+#include "range.h"
 
 Suite* hantek_drc_suite(void) {
     Suite* suite = suite_create("hantek_drc");
@@ -10,6 +11,7 @@ Suite* hantek_drc_suite(void) {
     suite_add_tcase(suite, csv_tcase());
     suite_add_tcase(suite, value_tcase());
     suite_add_tcase(suite, mem_tcase());
+    suite_add_tcase(suite, range_tcase());
     return suite;
 }
 

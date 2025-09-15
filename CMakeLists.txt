@@ -68,6 +68,7 @@ if(BUILD_TESTING)
         test/read.c
         test/csv.c
         test/mem.c
+        test/range.c
     )
     target_link_libraries(hantek_drc_test PRIVATE hantek_drc)
 
@@ -82,12 +83,13 @@ if(BUILD_TESTING)
     endif()
     # Ignore warning for check unit testing to work
     target_compile_options(hantek_drc_test PRIVATE -Wno-gnu-zero-variadic-macro-arguments)
-    add_test(NAME hantek_drc_test COMMAND hantek_drc_test)
+    add_test(NAME hantek_drc_test COMMAND hantek_drc_test WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 endif()
 
 option(BUILD_EXAMPLES "Whether or not build example subprojects" FALSE)
 if(BUILD_EXAMPLES)
     add_subdirectory(examples/gnuplot)
+    add_subdirectory(examples/csv)
 endif()
 
 if(NOT EXPORT_NAME)
