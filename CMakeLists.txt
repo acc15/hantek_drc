@@ -26,7 +26,27 @@ endif()
 
 set(CMAKE_DEBUG_POSTFIX "d")
 
-set(SRC 
+
+include_directories(include)
+set(HEADERS 
+    include/hantek_drc/fwd.h
+    include/hantek_drc/coupling.h
+    include/hantek_drc/caps.h
+    include/hantek_drc/channel.h
+    include/hantek_drc/format.h
+    include/hantek_drc/value.h
+    include/hantek_drc/info.h
+    include/hantek_drc/read.h
+    include/hantek_drc/csv.h
+    include/hantek_drc/mem.h
+    include/hantek_drc/handler.h
+    include/hantek_drc/filter.h
+    include/hantek_drc/frame_handler.h
+    include/hantek_drc/range.h
+    include/hantek_drc/gnuplot.h
+)
+
+add_library(hantek_drc 
     src/caps.c
     src/read.c
     src/value.c
@@ -41,31 +61,7 @@ set(SRC
     src/range.c
     src/gnuplot.c
 )
-
-set(INC include)
-
-include_directories(${INC})
-
-set(HEADERS 
-    ${INC}/hantek_drc/fwd.h
-    ${INC}/hantek_drc/coupling.h
-    ${INC}/hantek_drc/caps.h
-    ${INC}/hantek_drc/channel.h
-    ${INC}/hantek_drc/format.h
-    ${INC}/hantek_drc/value.h
-    ${INC}/hantek_drc/info.h
-    ${INC}/hantek_drc/read.h
-    ${INC}/hantek_drc/csv.h
-    ${INC}/hantek_drc/mem.h
-    ${INC}/hantek_drc/handler.h
-    ${INC}/hantek_drc/filter.h
-    ${INC}/hantek_drc/frame_handler.h
-    ${INC}/hantek_drc/range.h
-    ${INC}/hantek_drc/gnuplot.h
-)
-
-add_library(hantek_drc ${SRC})
-target_sources(hantek_drc PUBLIC FILE_SET HEADERS BASE_DIRS ${INC}/hantek_drc FILES ${HEADERS})
+target_sources(hantek_drc PUBLIC FILE_SET HEADERS BASE_DIRS include/hantek_drc FILES ${HEADERS})
 
 include(CTest)
 if(BUILD_TESTING)
