@@ -53,13 +53,14 @@ int main(int argc, char *argv[]) {
         .caps = hantek_drc_6254bd(),
         .handler = hantek_drc_filter(&filter)
     };
+    int exit_code = EXIT_SUCCESS;
     if (!hantek_drc_read_file(gnuplot.drc_path, &info)) {
         fprintf(stderr, "Can't read DRC file \"%s\"\n", gnuplot.drc_path);
-        return -1;
+        exit_code = EXIT_FAILURE;
     }
     if (!hantek_drc_info_finish_free(&info)) {
         fprintf(stderr, "Can't finish gnuplot, file \"%s\"", gnuplot.drc_path);
-        return -1;
+        exit_code = EXIT_FAILURE;
     }
-    return 0;
+    return exit_code;
 }
