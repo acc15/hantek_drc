@@ -1,4 +1,4 @@
-#include "read.h"
+#include "hantek_drc/read.h"
 #include <string.h>
 
 const uint8_t HANTEK_DRC_SIGNATURE[] = {

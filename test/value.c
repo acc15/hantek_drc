@@ -1,5 +1,5 @@
 #include "value.h"
-#include "../src/value.h"
+#include "hantek_drc/value.h"
 
 START_TEST(value_from_index) 
 {

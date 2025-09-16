@@ -5,6 +5,9 @@ set(CMAKE_C_STANDARD_REQUIRED TRUE) # Make it mandatory
 set(CMAKE_C_CPPCHECK "cppcheck;--check-level=exhaustive")
 set(CMAKE_C_CLANG_TIDY clang-tidy)
 
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+option(BUILD_EXAMPLES "Build examples" OFF)
+
 if(MSVC)
      add_definitions(-D_CRT_SECURE_NO_WARNINGS) # Disables CRT secure warning to allow cross-platform stdlib usage
      add_compile_options(
@@ -39,26 +42,30 @@ set(SRC
     src/gnuplot.c
 )
 
+set(INC include)
+
+include_directories(${INC})
+
 set(HEADERS 
-    src/fwd.h
-    src/coupling.h
-    src/caps.h
-    src/channel.h
-    src/format.h
-    src/value.h
-    src/info.h
-    src/read.h
-    src/csv.h
-    src/mem.h
-    src/handler.h
-    src/filter.h
-    src/frame_handler.h
-    src/range.h
-    src/gnuplot.h
+    ${INC}/hantek_drc/fwd.h
+    ${INC}/hantek_drc/coupling.h
+    ${INC}/hantek_drc/caps.h
+    ${INC}/hantek_drc/channel.h
+    ${INC}/hantek_drc/format.h
+    ${INC}/hantek_drc/value.h
+    ${INC}/hantek_drc/info.h
+    ${INC}/hantek_drc/read.h
+    ${INC}/hantek_drc/csv.h
+    ${INC}/hantek_drc/mem.h
+    ${INC}/hantek_drc/handler.h
+    ${INC}/hantek_drc/filter.h
+    ${INC}/hantek_drc/frame_handler.h
+    ${INC}/hantek_drc/range.h
+    ${INC}/hantek_drc/gnuplot.h
 )
 
 add_library(hantek_drc ${SRC})
-target_sources(hantek_drc PUBLIC FILE_SET HEADERS BASE_DIRS src FILES ${HEADERS})
+target_sources(hantek_drc PUBLIC FILE_SET HEADERS BASE_DIRS ${INC}/hantek_drc FILES ${HEADERS})
 
 include(CTest)
 if(BUILD_TESTING)
@@ -86,7 +93,6 @@ if(BUILD_TESTING)
     add_test(NAME hantek_drc_test COMMAND hantek_drc_test WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 endif()
 
-option(BUILD_EXAMPLES "Whether or not build example subprojects" FALSE)
 if(BUILD_EXAMPLES)
     add_subdirectory(examples/gnuplot)
     add_subdirectory(examples/csv)

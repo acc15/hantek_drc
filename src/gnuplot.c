@@ -1,4 +1,4 @@
-#include "gnuplot.h"
+#include "hantek_drc/gnuplot.h"
 #include <string.h>
 
 void hit_enter(void) {

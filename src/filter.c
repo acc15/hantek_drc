@@ -1,4 +1,4 @@
-#include "filter.h"
+#include "hantek_drc/filter.h"
 
 hantek_drc_frame_handler hantek_drc_filter(hantek_drc_filter_params* params) {
     return (hantek_drc_frame_handler) {

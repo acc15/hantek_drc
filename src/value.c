@@ -1,4 +1,4 @@
-#include "value.h"
+#include "hantek_drc/value.h"
 
 uint64_t hantek_drc_fast_pow_10(unsigned int pow) {
     static const uint64_t pow10[] = {

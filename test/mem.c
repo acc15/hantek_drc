@@ -1,7 +1,7 @@
 #include "mem.h"
-#include "../src/mem.h"
-#include "../src/read.h"
-#include "../src/filter.h"
+#include "hantek_drc/mem.h"
+#include "hantek_drc/read.h"
+#include "hantek_drc/filter.h"
 
 struct test_frame_data {
     size_t frame;

@@ -1,6 +1,6 @@
 #include "range.h"
 
-#include "../src/range.h"
+#include "hantek_drc/range.h"
 
 void check_range(hantek_drc_range actual, hantek_drc_range expected) {
     ck_assert_uint_eq(actual.enabled, expected.enabled);

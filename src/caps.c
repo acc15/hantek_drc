@@ -1,4 +1,4 @@
-#include "caps.h"
+#include "hantek_drc/caps.h"
 
 // NOLINTBEGIN(readability-magic-numbers)
 hantek_drc_caps hantek_drc_6254bd(void) {

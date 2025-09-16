@@ -1,5 +1,5 @@
 #include "read.h"
-#include "../src/read.h"
+#include "hantek_drc/read.h"
 
 START_TEST(read_file) 
 {

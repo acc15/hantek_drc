@@ -1,7 +1,7 @@
 #include <memory.h>
 
-#include "info.h"
-#include "value.h"
+#include "hantek_drc/info.h"
+#include "hantek_drc/value.h"
 
 
 uint64_t hantek_drc_info_timediv_nanos(const hantek_drc_info* info) {

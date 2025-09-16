@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include "handler.h"
-#include "info.h"
+#include "hantek_drc/handler.h"
+#include "hantek_drc/info.h"
 
 void hantek_drc_handler_free(void* handler_any, const hantek_drc_info* info) {
     hantek_drc_handler* handler = (hantek_drc_handler*) handler_any;

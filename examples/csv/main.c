@@ -5,11 +5,11 @@
 
 #include <getopt.h>
 
-#include "../../src/range.h"
-#include "../../src/format.h"
-#include "../../src/csv.h"
-#include "../../src/filter.h"
-#include "../../src/read.h"
+#include <hantek_drc/range.h>
+#include <hantek_drc/format.h>
+#include <hantek_drc/csv.h>
+#include <hantek_drc/filter.h>
+#include <hantek_drc/read.h>
 
 #ifndef PROGRAM_NAME
 #   define PROGRAM_NAME "hantek_drc_csv"

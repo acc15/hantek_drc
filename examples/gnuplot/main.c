@@ -4,12 +4,12 @@
 
 #include <getopt.h>
 
-#include "../../src/range.h"
-#include "../../src/format.h"
-#include "../../src/channel.h"
-#include "../../src/read.h"
-#include "../../src/filter.h"
-#include "../../src/gnuplot.h"
+#include <hantek_drc/range.h>
+#include <hantek_drc/format.h>
+#include <hantek_drc/channel.h>
+#include <hantek_drc/read.h>
+#include <hantek_drc/filter.h>
+#include <hantek_drc/gnuplot.h>
 
 #ifndef PROGRAM_NAME
 #   define PROGRAM_NAME "hantek_drc_gnuplot"

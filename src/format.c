@@ -2,8 +2,8 @@
 #include <string.h>
 #include <errno.h>
 
-#include "format.h"
-#include "info.h"
+#include "hantek_drc/format.h"
+#include "hantek_drc/info.h"
 
 size_t hantek_drc_data_type_size(hantek_drc_data_type type) {
     switch (type) {

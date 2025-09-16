@@ -1,6 +1,6 @@
 #include "csv.h"
-#include "../src/csv.h"
-#include "../src/read.h"
+#include "hantek_drc/csv.h"
+#include "hantek_drc/read.h"
 
 START_TEST(write_csv) 
 {

@@ -1,4 +1,4 @@
-#include "mem.h"
+#include "hantek_drc/mem.h"
 
 #include <stdlib.h>
 #include <string.h>
