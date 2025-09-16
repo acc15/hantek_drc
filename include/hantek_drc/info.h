@@ -16,7 +16,6 @@
 extern "C" {
 #endif
 
-
 typedef struct hantek_drc_info {
     hantek_drc_caps caps;
     hantek_drc_frame_handler handler;
@@ -26,10 +25,9 @@ typedef struct hantek_drc_info {
     size_t channel_count; // count of enabled channels in file
     uint16_t timediv; // timediv index
     size_t buffer_length; // buffer length (count of data points in single frame)
-    size_t frame_count; // count of frames that has been read from files
+    size_t frame_count; // total count of frames that has been read from files
 
 } hantek_drc_info;
-
 
 uint64_t hantek_drc_info_timediv_nanos(const hantek_drc_info* info);
 uint64_t hantek_drc_info_sampling_rate_milli(const hantek_drc_info* info);

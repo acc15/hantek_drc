@@ -8,6 +8,7 @@ bool hantek_drc_csv_frame(void* params_any, const hantek_drc_channel* channel, c
     hantek_drc_csv_params* params = (hantek_drc_csv_params*) params_any;
     FILE* file = params->file;
     size_t buffer_length = channel->info->buffer_length;
+    hantek_drc_info* info = channel->info;
     for (size_t i = 0; i < buffer_length; ++i) {
         
         for (size_t col_num = 0;; ++col_num) {
@@ -31,7 +32,7 @@ bool hantek_drc_csv_frame(void* params_any, const hantek_drc_channel* channel, c
                 break;
 
             case HANTEK_DRC_CSV_COLUMN_FRAME:
-                print_result = fprintf(file, "%zu", channel->info->frame_count);
+                print_result = fprintf(file, "%zu", info->frame_count / info->channel_count);
                 break;
 
             case HANTEK_DRC_CSV_COLUMN_FRAME_INDEX:
@@ -39,15 +40,12 @@ bool hantek_drc_csv_frame(void* params_any, const hantek_drc_channel* channel, c
                 break;
 
             case HANTEK_DRC_CSV_COLUMN_CHANNEL_INDEX:
-                print_result = fprintf(file, "%zu", (channel->info->frame_count * channel->info->buffer_length) + i);
+                print_result = fprintf(file, "%zu", (info->frame_count / info->channel_count * info->buffer_length ) + i);
                 break;
 
             case HANTEK_DRC_CSV_COLUMN_GLOBAL_INDEX:
                 {
-                    size_t global_index = (
-                        ((channel->info->channel_count * channel->info->frame_count) + channel->index)
-                        * buffer_length
-                    ) + i;
+                    size_t global_index = ((info->frame_count + channel->index) * buffer_length) + i;
                     print_result = fprintf(file, "%zu", global_index);
                     break;
                 }

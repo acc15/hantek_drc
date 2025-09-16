@@ -19,7 +19,7 @@ bool hantek_drc_read_signature(FILE* file);
 bool hantek_drc_read_channels(FILE* file, hantek_drc_info* info);
 bool hantek_drc_read_general(FILE* file, hantek_drc_info* info);
 bool hantek_drc_read_header(FILE* file, hantek_drc_info* info);
-bool hantek_drc_read_data_frame(FILE* file, hantek_drc_channel* channel_info, int16_t* buffer);
+bool hantek_drc_read_frame(FILE* file, hantek_drc_info* info, int16_t* buffer);
 bool hantek_drc_read_data(FILE* file, hantek_drc_info* info);
 bool hantek_drc_read(FILE* file, hantek_drc_info* info);
 bool hantek_drc_read_file(const char* path, hantek_drc_info* info);
